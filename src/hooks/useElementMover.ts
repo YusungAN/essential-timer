@@ -94,7 +94,7 @@ export function useElementMover(initialPos: ElementPos, initialSize: ElementSize
 
         if (isResizingRef.current) {
             // console.log('holy moly');
-            const [isOnTop, isOnBottom, isOnLeft, isOnRight] = _detectResizeAction(e.clientX, e.clientY);
+            const [isOnBottom, isOnRight] = _detectResizeAction(e.clientX, e.clientY);
             // console.log(isOnTop, isOnBottom, isOnLeft, isOnRight);
 
             if (isOnBottom) {

@@ -35,14 +35,15 @@ export function useElementMover(initialPos: ElementPos, initialSize: ElementSize
     const firstResizePosRef = useRef<ElementPos | null>(null);
     const elementPosRef = useRef(initialPos);
     const isResizingRef = useRef(false);
+    const elementSizeRef = useRef(initialSize);
 
     function _detectResizeAction(cx: number, cy: number) {
         const isOnTop = cy < elementPosRef.current.y + touchMargin;
-        const isOnBottom = cy > elementPosRef.current.y + elementSize.height - touchMargin;
+        const isOnBottom = cy > elementPosRef.current.y + elementSizeRef.current.height - touchMargin;
         const isOnLeft = cx < elementPosRef.current.x + touchMargin;
-        const isOnRight = cx > elementPosRef.current.x + elementSize.width - touchMargin;
+        const isOnRight = cx > elementPosRef.current.x + elementSizeRef.current.width - touchMargin;
 
-        return [isOnTop, isOnBottom, isOnLeft, isOnRight];
+        return {isOnTop, isOnBottom, isOnLeft, isOnRight};
     }
 
     function initMove(e: React.MouseEvent) {
@@ -50,7 +51,7 @@ export function useElementMover(initialPos: ElementPos, initialSize: ElementSize
         firstResizePosRef.current = {x: elementSize.width + elementPos.x - e.clientX, y: elementSize.height + elementPos.y - e.clientY};
 
 
-        const [isOnTop, isOnBottom, isOnLeft, isOnRight] = _detectResizeAction(e.clientX, e.clientY);
+        const {isOnTop, isOnBottom, isOnLeft, isOnRight} = _detectResizeAction(e.clientX, e.clientY);
         // console.log(isOnTop, isOnBottom, isOnLeft, isOnRight);
 
 
@@ -70,12 +71,11 @@ export function useElementMover(initialPos: ElementPos, initialSize: ElementSize
     function moveElement(e: React.MouseEvent) {
         if (firstMousePosRef.current === null) return;
 
-        const isOnBottom = e.clientY > elementPos.y + elementSize.height - touchMargin;
-        const isOnRight = e.clientX > elementPos.x + elementSize.width - touchMargin;
+        const {isOnBottom, isOnRight} = _detectResizeAction(e.clientX, e.clientY);
 
         if (isOnBottom && isOnRight) setIsResizable(ResizingPart.BOT_RIGHT);
         else if (isOnBottom) setIsResizable(ResizingPart.BOTTOM);
-        else if (isOnRight) setIsResizable(ResizingPart.RIGHT);
+        else if (isOnRight) setIsResizable(ResizingPart.RIGHT)
 
         if (isCliking) {
             const xNew = (e.clientX - firstMousePosRef.current.x);
@@ -94,8 +94,8 @@ export function useElementMover(initialPos: ElementPos, initialSize: ElementSize
 
         if (isResizingRef.current) {
             // console.log('holy moly');
-            const [isOnBottom, isOnRight] = _detectResizeAction(e.clientX, e.clientY);
-            // console.log(isOnTop, isOnBottom, isOnLeft, isOnRight);
+            const {isOnBottom, isOnRight} = _detectResizeAction(e.clientX, e.clientY);
+            console.log(isOnBottom, isOnRight);
 
             if (isOnBottom) {
                 newHeight = e.clientY - elementPosRef.current.y + firstResizePosRef.current.y;
@@ -115,6 +115,7 @@ export function useElementMover(initialPos: ElementPos, initialSize: ElementSize
                 
             // }
             setElementSize({width: newWidth, height: newHeight});
+            elementSizeRef.current = {width: newWidth, height: newHeight};
             // setElementPos({x: newLeft, y: newTop});
         }
 

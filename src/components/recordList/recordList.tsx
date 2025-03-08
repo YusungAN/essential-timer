@@ -21,7 +21,7 @@ function RecordList(props: RecordListProps) {
 
     return (
         <>
-            <div ref={scrollRef} className="container w-[30vw] h-[30vh] bg-[#F4F4F7] rounded-md p-[15px] overflow-auto">
+            <div ref={scrollRef} className="container xl:w-[400px] lg:w-[300px] md:w-[200px] h-[30vh] bg-[#F4F4F7] rounded-md p-[15px] overflow-auto">
                 {
                     recordList.map((item, idx) => {
                         return <RecordItem key={item.timestamp} index={idx} record={item} onDelete={() => deleteRecord(item)} changePenalty={(penalty: '' | '+2' | 'DNF') => changePenalty(item, penalty)} />

@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { CubeState, scrambleProcessing } from "../components/scrambleViewer/scrambleProcessing";
 
 type ScrambleType = '3x3x3';
 
@@ -31,6 +32,7 @@ export function useScramble() {
     }
 
     function get3x3x3Scramble(): string {
+
         let scrambleArr: string[] = [];
         let prevMove: string | null = null;
         let prvOfprvMove: string | null = null;
@@ -50,5 +52,17 @@ export function useScramble() {
         return scrambleArr.join(' ')
     }
 
-    return {scramble, setNewScramble};
+    function getScrambleCubeState(scrambleType: ScrambleType, scramble: string) {
+        if (scrambleType === '3x3x3') return scrambleProcessing(scramble);
+        else return ({
+            U: ['U', 'U', 'U', 'U', 'U', 'U', 'U', 'U', 'U'],
+            D: ['D', 'D', 'D', 'D', 'D', 'D', 'D', 'D', 'D'],
+            F: ['F', 'F', 'F', 'F', 'F', 'F', 'F', 'F', 'F'],
+            B: ['B', 'B', 'B', 'B', 'B', 'B', 'B', 'B', 'B'],
+            L: ['L', 'L', 'L', 'L', 'L', 'L', 'L', 'L', 'L'],
+            R: ['R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R']
+        }) as CubeState;
+    }
+
+    return {scramble, setNewScramble, getScrambleCubeState};
 }

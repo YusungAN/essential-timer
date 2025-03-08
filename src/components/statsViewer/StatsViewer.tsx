@@ -32,6 +32,9 @@ function StatsViewer(props: {recordList: SolvedRecord[]}) {
             }
             setNowAo5(_nowAo5);
             setBestAo5(_bestAo5);
+        } else {
+            setNowAo5(null);
+            setBestAo5(null);
         }
 
         if (recordList.length >= 12) {
@@ -43,6 +46,9 @@ function StatsViewer(props: {recordList: SolvedRecord[]}) {
             }
             setNowAo12(_nowAo12);
             setBestAo12(_bestAo12);
+        } else {
+            setNowAo12(null);
+            setBestAo12(null);
         }
 
 

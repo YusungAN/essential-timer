@@ -1,2 +1,5 @@
 @import "tailwindcss";
 
+@theme {
+    --sc-view-initial-left: calc(100vw - 420px);
+}

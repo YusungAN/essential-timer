@@ -10,7 +10,7 @@ interface RecordItemProps {
 }
 
 function RecordItem(props: RecordItemProps) {
-    const {index, record, onDelete, changePenalty} = props;
+    const {record, onDelete, changePenalty} = props;
 
     function time2Str(time: number) {
         const minutes = Math.floor(time / 60000);
@@ -22,7 +22,7 @@ function RecordItem(props: RecordItemProps) {
 
     return <div className="flex w-full bg-[#E5E5EB] rounded-md p-[10px] mb-[5px] mt-[5px] justify-between items-center">
         <div className="flex">
-            <div className="text-gray-400 mr-[5px]">{index+1}.</div>
+            {/* <div className="text-gray-400 mr-[5px]">{index+1}.</div> */}
             <div>{record.penalty === 'DNF' ? 'DNF' : time2Str(record.penalty === '+2' ? record.record + 2000 : record.record)}</div>
         </div>
         <div className="flex w-[30%] max-w-[100px] justify-between items-center text-sm">

@@ -26,7 +26,7 @@ function StatsViewer(props: {recordList: SolvedRecord[]}) {
         if (recordList.length >= 5) {
             for (let i = 0; i < recordList.length-4; i++) {
                 let tempArr = recordList.slice(i, i+5).map((item) => item.penalty === '+2' ? item.record + 2 : (item.penalty === 'DNF' ? Infinity : item.record));
-                tempArr.sort();
+                tempArr.sort((a, b) => a - b);
                 _nowAo5 = (tempArr[1]+tempArr[2]+tempArr[3])/3;
                 _bestAo5 = Math.min(_nowAo5, _bestAo5);
             }

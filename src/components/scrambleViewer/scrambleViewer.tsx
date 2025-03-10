@@ -61,7 +61,7 @@ function ScrambleViewer(props: {scramble: string}) {
                     <div className="w-full aspect-square"></div>
                     <div className="w-full aspect-square"></div>
                 </div>
-                <div className="w-[5%] aspect-square border-b-1 border-r-1 absolute top-[94%] left-[95%]"></div>
+                <div className="w-[10px] aspect-square border-b-1 border-r-1 absolute top-[calc(100%-10px)] left-[calc(100%-10px)]"></div>
             </div>
         </>
     )

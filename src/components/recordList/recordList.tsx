@@ -36,20 +36,21 @@ function RecordList(props: RecordListProps) {
     return (
         <>
             <div 
-                ref={scrollRef} 
                 style={{top: `${elementPos.y}px`, left: `${elementPos.x}px`, width: `${elementSize.width}px`, height: `${elementSize.height}px`}}
-                className={`absolute container min-w-[220px] bg-[#F4F4F7] rounded-md p-[15px] overflow-auto ${isCliking || isResizing ? 'opacity-75' : 'opacity-100'} ${showResizecursor(isReSizable)}`}
+                className={`absolute container min-w-[220px] bg-[#F4F4F7] rounded-md p-[15px] ${isCliking || isResizing ? 'opacity-75' : 'opacity-100'} ${showResizecursor(isReSizable)}`}
                 onMouseDown={initMove}
                 onMouseMove={moveElement}
                 onMouseUp={endMove}
                 onMouseLeave={endMove}
             >
-                {
-                    recordList.map((item, idx) => {
-                        return <RecordItem key={item.timestamp} index={idx} record={item} onDelete={() => deleteRecord(item)} changePenalty={(penalty: '' | '+2' | 'DNF') => changePenalty(item, penalty)} />
-                    })
-                }
-                <div className="w-[5%] aspect-square border-b-1 border-r-1 absolute top-[96%] left-[95%]"></div>
+                <div ref={scrollRef} className="overflow-auto h-full">
+                    {
+                        recordList.map((item, idx) => {
+                            return <RecordItem key={item.timestamp} index={idx} record={item} onDelete={() => deleteRecord(item)} changePenalty={(penalty: '' | '+2' | 'DNF') => changePenalty(item, penalty)} />
+                        })
+                    }
+                </div>
+                <div className="w-[10px] aspect-square border-b-1 border-r-1 absolute top-[calc(100%-10px)] left-[calc(100%-10px)]"></div>
             </div>
         </>
     )

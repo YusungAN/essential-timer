@@ -1,6 +1,8 @@
 import { useRef, useEffect } from "react";
 import RecordItem from "./subs/recordItem";
 import { SolvedRecord } from "../../util/record.util";
+import { useElementMover } from "../../hooks/useElementMover";
+import { ResizingPart } from "../../hooks/useElementMover";
 
 interface RecordListProps {
     recordList: SolvedRecord[];
@@ -11,7 +13,15 @@ interface RecordListProps {
 function RecordList(props: RecordListProps) {
     const {recordList, deleteRecord, changePenalty} = props;
     const scrollRef = useRef<HTMLDivElement | null>(null);
+
+    const {isCliking, isResizing, isReSizable, elementPos, elementSize, initMove, moveElement, endMove} = useElementMover({x: 50, y: window.innerHeight/2-250}, {width: 300, height: 500});
     
+    function showResizecursor(resizeType: ResizingPart) {
+        if (resizeType === ResizingPart.BOT_RIGHT) return 'cursor-nwse-resize';
+        // else if (resizeType === ResizingPart.RIGHT) return 'cursor-ew-resize'
+        // else if (resizeType === ResizingPart.BOTTOM) return 'cursor-ns-resize'
+        return ''
+    }
 
     useEffect(() => {
         if (scrollRef.current instanceof HTMLDivElement) {
@@ -19,14 +29,27 @@ function RecordList(props: RecordListProps) {
         }
     }, [recordList.length]);
 
+    useEffect(() => {
+        console.log(elementPos);
+    }, [elementPos]);
+
     return (
         <>
-            <div ref={scrollRef} className="container xl:w-[400px] lg:w-[300px] md:w-[200px] h-[30vh] bg-[#F4F4F7] rounded-md p-[15px] overflow-auto">
+            <div 
+                ref={scrollRef} 
+                style={{top: `${elementPos.y}px`, left: `${elementPos.x}px`, width: `${elementSize.width}px`, height: `${elementSize.height}px`}}
+                className={`absolute container min-w-[220px] bg-[#F4F4F7] rounded-md p-[15px] overflow-auto ${isCliking || isResizing ? 'opacity-75' : 'opacity-100'} ${showResizecursor(isReSizable)}`}
+                onMouseDown={initMove}
+                onMouseMove={moveElement}
+                onMouseUp={endMove}
+                onMouseLeave={endMove}
+            >
                 {
                     recordList.map((item, idx) => {
                         return <RecordItem key={item.timestamp} index={idx} record={item} onDelete={() => deleteRecord(item)} changePenalty={(penalty: '' | '+2' | 'DNF') => changePenalty(item, penalty)} />
                     })
                 }
+                <div className="w-[5%] aspect-square border-b-1 border-r-1 absolute top-[96%] left-[95%]"></div>
             </div>
         </>
     )

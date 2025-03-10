@@ -22,7 +22,7 @@ export enum ResizingPart {
     BOT_LEFT
 }
 
-export function useElementMover(initialPos: ElementPos, initialSize: ElementSize) {
+export function useElementMover(initialPos: ElementPos, initialSize: ElementSize) { // state 없이 ref로 직접 DOM에 접근해서 하는 게 버그가 적을 듯.,,.. 아니면 그냥 우측 하단 코너만 살리자
 
     const touchMargin = 20;
 
@@ -51,20 +51,21 @@ export function useElementMover(initialPos: ElementPos, initialSize: ElementSize
         firstResizePosRef.current = {x: elementSize.width + elementPos.x - e.clientX, y: elementSize.height + elementPos.y - e.clientY};
 
 
-        const {isOnTop, isOnBottom, isOnLeft, isOnRight} = _detectResizeAction(e.clientX, e.clientY);
+        const {isOnBottom, isOnRight} = _detectResizeAction(e.clientX, e.clientY);
         // console.log(isOnTop, isOnBottom, isOnLeft, isOnRight);
 
 
-        if (isOnTop || isOnLeft || isOnBottom || isOnRight) isResizingRef.current = true;
+        // if (isOnTop || isOnLeft || isOnBottom || isOnRight) isResizingRef.current = true;
+        if (isOnBottom && isOnRight) isResizingRef.current = true;
 
-        if (isOnTop && isOnLeft) setIsResizing(ResizingPart.TOP_LEFT);
-        else if (isOnTop && isOnRight) setIsResizing(ResizingPart.TOP_RIGHT)
-        else if (isOnBottom && isOnLeft) setIsResizing(ResizingPart.BOT_LEFT);
-        else if (isOnBottom && isOnRight) setIsResizing(ResizingPart.BOT_RIGHT);
-        else if (isOnTop) setIsResizing(ResizingPart.TOP);
-        else if (isOnBottom) setIsResizing(ResizingPart.BOTTOM);
-        else if (isOnLeft) setIsResizing(ResizingPart.LEFT);
-        else if (isOnRight) setIsResizing(ResizingPart.RIGHT);
+        // if (isOnTop && isOnLeft) setIsResizing(ResizingPart.TOP_LEFT);
+        // else if (isOnTop && isOnRight) setIsResizing(ResizingPart.TOP_RIGHT)
+        // else if (isOnBottom && isOnLeft) setIsResizing(ResizingPart.BOT_LEFT);
+        if (isOnBottom && isOnRight) setIsResizing(ResizingPart.BOT_RIGHT);
+        // else if (isOnTop) setIsResizing(ResizingPart.TOP);
+        // else if (isOnBottom) setIsResizing(ResizingPart.BOTTOM);
+        // else if (isOnLeft) setIsResizing(ResizingPart.LEFT);
+        // else if (isOnRight) setIsResizing(ResizingPart.RIGHT);
         else setIsClicking(true);
     }
 
@@ -95,7 +96,7 @@ export function useElementMover(initialPos: ElementPos, initialSize: ElementSize
         if (isResizingRef.current) {
             // console.log('holy moly');
             const {isOnBottom, isOnRight} = _detectResizeAction(e.clientX, e.clientY);
-            console.log(isOnBottom, isOnRight);
+            console.log(newWidth, newHeight);
 
             if (isOnBottom) {
                 newHeight = e.clientY - elementPosRef.current.y + firstResizePosRef.current.y;
@@ -103,6 +104,7 @@ export function useElementMover(initialPos: ElementPos, initialSize: ElementSize
             if (isOnRight) {
                 newWidth = e.clientX - elementPosRef.current.x + firstResizePosRef.current.x;
             }
+            console.log(newWidth, newHeight);
 
             // if (isOnTop) {
             //     console.log('asdfasdfasdf');

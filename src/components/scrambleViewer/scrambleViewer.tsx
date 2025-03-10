@@ -19,13 +19,13 @@ function ScrambleViewer(props: {scramble: string}) {
         R: ['R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R']
     });
     const {getScrambleCubeState} = useScramble();
-    const {isCliking, isResizing, isReSizable, elementPos, elementSize, initMove, moveElement, endMove} = useElementMover({x: window.innerWidth-450, y: window.innerHeight/2-100}, {width: 400, height: 350});
+    const {isCliking, isResizing, isReSizable, elementPos, elementSize, initMove, moveElement, endMove} = useElementMover({x: window.innerWidth-450, y: window.innerHeight/2-175}, {width: 400, height: 350});
 
 
     function showResizecursor(resizeType: ResizingPart) {
         if (resizeType === ResizingPart.BOT_RIGHT) return 'cursor-nwse-resize';
-        else if (resizeType === ResizingPart.RIGHT) return 'cursor-ew-resize'
-        else if (resizeType === ResizingPart.BOTTOM) return 'cursor-ns-resize'
+        // else if (resizeType === ResizingPart.RIGHT) return 'cursor-ew-resize'
+        // else if (resizeType === ResizingPart.BOTTOM) return 'cursor-ns-resize'
         return ''
     }
 
@@ -61,6 +61,7 @@ function ScrambleViewer(props: {scramble: string}) {
                     <div className="w-full aspect-square"></div>
                     <div className="w-full aspect-square"></div>
                 </div>
+                <div className="w-[5%] aspect-square border-b-1 border-r-1 absolute top-[94%] left-[95%]"></div>
             </div>
         </>
     )

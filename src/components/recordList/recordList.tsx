@@ -14,13 +14,13 @@ function RecordList(props: RecordListProps) {
     const {recordList, deleteRecord, changePenalty} = props;
     const scrollRef = useRef<HTMLDivElement | null>(null);
 
-    const {isCliking, isResizing, isReSizable, elementPos, elementSize, initMove, moveElement, endMove} = useElementMover({x: 50, y: window.innerHeight/2-250}, {width: 300, height: 500});
+    const {isCliking, isResizing, isReSizable, elementPos, elementSize, initMove, moveElement, endMove} = useElementMover({x: 50, y: window.innerHeight/2-250}, {width: 300, height: 500}, 'record-list');
     
     function showResizecursor(resizeType: ResizingPart) {
         if (resizeType === ResizingPart.BOT_RIGHT) return 'cursor-nwse-resize';
         // else if (resizeType === ResizingPart.RIGHT) return 'cursor-ew-resize'
         // else if (resizeType === ResizingPart.BOTTOM) return 'cursor-ns-resize'
-        return ''
+        return '';
     }
 
     useEffect(() => {

@@ -5,7 +5,6 @@ import CubeFace from "./subs/cubeFace";
 import { useElementMover } from "../../hooks/useElementMover";
 import { ResizingPart } from "../../hooks/useElementMover";
 
-
 function ScrambleViewer(props: {scramble: string}) {
 
     const {scramble} = props;
@@ -19,8 +18,7 @@ function ScrambleViewer(props: {scramble: string}) {
         R: ['R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R']
     });
     const {getScrambleCubeState} = useScramble();
-    const {isCliking, isResizing, isReSizable, elementPos, elementSize, initMove, moveElement, endMove} = useElementMover({x: window.innerWidth-450, y: window.innerHeight/2-175}, {width: 400, height: 350});
-
+    const {isCliking, isResizing, isReSizable, elementPos, elementSize, initMove, moveElement, endMove} = useElementMover({x: window.innerWidth-450, y: window.innerHeight/2-175}, {width: 400, height: 350}, 'sc-viewer');
 
     function showResizecursor(resizeType: ResizingPart) {
         if (resizeType === ResizingPart.BOT_RIGHT) return 'cursor-nwse-resize';

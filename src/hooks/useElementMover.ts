@@ -1,4 +1,6 @@
 import { useState, useRef, useEffect } from "react";
+import { useLocalStorage } from "usehooks-ts";
+
 
 export interface ElementPos {
     x: number;
@@ -22,7 +24,7 @@ export enum ResizingPart {
     BOT_LEFT
 }
 
-export function useElementMover(initialPos: ElementPos, initialSize: ElementSize) { // state 없이 ref로 직접 DOM에 접근해서 하는 게 버그가 적을 듯.,,.. 아니면 그냥 우측 하단 코너만 살리자
+export function useElementMover(initialPos: ElementPos, initialSize: ElementSize, storedInfoKey: string) {
 
     const touchMargin = 20;
 
@@ -36,6 +38,8 @@ export function useElementMover(initialPos: ElementPos, initialSize: ElementSize
     const elementPosRef = useRef(initialPos);
     const isResizingRef = useRef(false);
     const elementSizeRef = useRef(initialSize);
+    const [elementPosStorage, setElementPosStorage] = useLocalStorage(`${storedInfoKey}-pos`, initialPos);
+    const [elementSizeStorage, setElementSizeStorage] = useLocalStorage(`${storedInfoKey}-size`, initialSize);
 
     function _detectResizeAction(cx: number, cy: number) {
         const isOnTop = cy < elementPosRef.current.y + touchMargin;
@@ -52,20 +56,12 @@ export function useElementMover(initialPos: ElementPos, initialSize: ElementSize
 
 
         const {isOnBottom, isOnRight} = _detectResizeAction(e.clientX, e.clientY);
-        // console.log(isOnTop, isOnBottom, isOnLeft, isOnRight);
 
 
-        // if (isOnTop || isOnLeft || isOnBottom || isOnRight) isResizingRef.current = true;
-        if (isOnBottom && isOnRight) isResizingRef.current = true;
-
-        // if (isOnTop && isOnLeft) setIsResizing(ResizingPart.TOP_LEFT);
-        // else if (isOnTop && isOnRight) setIsResizing(ResizingPart.TOP_RIGHT)
-        // else if (isOnBottom && isOnLeft) setIsResizing(ResizingPart.BOT_LEFT);
-        if (isOnBottom && isOnRight) setIsResizing(ResizingPart.BOT_RIGHT);
-        // else if (isOnTop) setIsResizing(ResizingPart.TOP);
-        // else if (isOnBottom) setIsResizing(ResizingPart.BOTTOM);
-        // else if (isOnLeft) setIsResizing(ResizingPart.LEFT);
-        // else if (isOnRight) setIsResizing(ResizingPart.RIGHT);
+        if (isOnBottom && isOnRight) {
+            setIsResizing(ResizingPart.BOT_RIGHT);
+            isResizingRef.current = true;
+        }
         else setIsClicking(true);
     }
 
@@ -90,11 +86,8 @@ export function useElementMover(initialPos: ElementPos, initialSize: ElementSize
         if (firstResizePosRef.current === null) return;
         let newWidth = elementSize.width;
         let newHeight = elementSize.height;
-        // let newTop = elementPosRef.current.y; // state를 그대로 쓰는 경우 최신 값에 접근이 안됨
-        // let newLeft = elementPosRef.current.x;
 
         if (isResizingRef.current) {
-            // console.log('holy moly');
             const {isOnBottom, isOnRight} = _detectResizeAction(e.clientX, e.clientY);
             console.log(newWidth, newHeight);
 
@@ -104,21 +97,8 @@ export function useElementMover(initialPos: ElementPos, initialSize: ElementSize
             if (isOnRight) {
                 newWidth = e.clientX - elementPosRef.current.x + firstResizePosRef.current.x;
             }
-            console.log(newWidth, newHeight);
-
-            // if (isOnTop) {
-            //     console.log('asdfasdfasdf');
-            //     newHeight = elementSize.height + (e.clientY - elementPosRef.current.y + elementSize.height - firstResizePosRef.current.y);
-            //     newTop -= newHeight - elementSize.height;
-
-            //     console.log(elementSize.height, newHeight);
-            //     console.log(elementPosRef.current.y, newTop);
-            //     elementPosRef.current.y = newTop;
-                
-            // }
             setElementSize({width: newWidth, height: newHeight});
             elementSizeRef.current = {width: newWidth, height: newHeight};
-            // setElementPos({x: newLeft, y: newTop});
         }
 
     }
@@ -127,17 +107,25 @@ export function useElementMover(initialPos: ElementPos, initialSize: ElementSize
         firstResizePosRef.current = {x: 0, y: 0};
         setIsResizing(ResizingPart.NO_RESIZING);
         isResizingRef.current = false;
+        setElementSizeStorage(elementSizeRef.current);
     }
 
     function endMove() {
         firstMousePosRef.current = {x: 0, y: 0};
         setIsClicking(false);
-        console.log('fuck');
+        setElementPosStorage(elementPosRef.current);
     }
 
     useEffect(() => {
         document.addEventListener('mousemove', resizeElement);
         document.addEventListener('mouseup', endResize);
+        setElementPos(elementPosStorage);
+        setElementSize(elementSizeStorage);
+
+        return () => {
+            document.removeEventListener('mousemove', resizeElement);
+            document.removeEventListener('mouseup', endResize);
+        };
     }, []);
 
     return {

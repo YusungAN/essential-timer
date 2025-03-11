@@ -13,22 +13,32 @@ export function useRecords() {
         
         try {
             const data = await IndexedDBClient.getSessionRecords(sessionID);
-            console.log('asdfasdfasdfasdf', data);
-            setRecordList(data.records);   
+            // console.log('asdfasdfasdfasdf', data);
+            if (data !== undefined) setRecordList(data.records);   
         } catch (e) {
             console.log(e);
+            alert('기록을 불러오는데 실패했습니다.');
         }
     }
 
     async function addRecord(scramble: string, record: number, penalty: '' | '+2' | 'DNF') {
         const newRecord = {record: record, scramble: scramble, penalty: penalty, timestamp: Date.now()};
         setRecordList(prevList => [...prevList, newRecord]);
-        await IndexedDBClient.addRecord(sessionID, newRecord);
+        try {
+            await IndexedDBClient.addRecord(sessionID, newRecord);
+        } catch (e) {
+            console.log(e);
+            alert('기록을 추가하는데 실패했습니다.');
+        }
     }
 
     async function deleteRecord(target: SolvedRecord) {
         setRecordList(recordList.filter((item: SolvedRecord) => item.timestamp !== target.timestamp));
-        await IndexedDBClient.deleteRecord(sessionID, target);
+        try {
+            await IndexedDBClient.deleteRecord(sessionID, target);
+        } catch (e) {
+            console.log('기록을 삭제하는데 실패했습니다.')
+        }
     }
 
     async function changePenalty(target: SolvedRecord, penalty: '' | '+2' | 'DNF') {
@@ -38,16 +48,17 @@ export function useRecords() {
                 else return {...item, penalty: ''};
             } else return item;
         }));
-        await IndexedDBClient.changePenalty(sessionID, target, penalty);
+        try {
+            await IndexedDBClient.changePenalty(sessionID, target, penalty);
+        } catch (e) {
+            console.log(e);
+            alert('페널티를 수정하는데 실패했습니다.');
+        }
     }
 
     useEffect(() => {
         getSessionRecords();
     }, [sessionID]);
-
-    useEffect(() => {
-        console.log('list changed', recordList);
-    }, [recordList]);
 
     return {sessionID, recordList, changeSession: setSessionID, getSessionRecords, addRecord, deleteRecord, changePenalty};
 };

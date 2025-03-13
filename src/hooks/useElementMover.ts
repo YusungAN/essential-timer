@@ -38,6 +38,7 @@ export function useElementMover(initialPos: ElementPos, initialSize: ElementSize
     const elementPosRef = useRef(initialPos);
     const isResizingRef = useRef(false);
     const elementSizeRef = useRef(initialSize);
+    
     const [elementPosStorage, setElementPosStorage] = useLocalStorage(`${storedInfoKey}-pos`, initialPos);
     const [elementSizeStorage, setElementSizeStorage] = useLocalStorage(`${storedInfoKey}-size`, initialSize);
 
@@ -116,11 +117,23 @@ export function useElementMover(initialPos: ElementPos, initialSize: ElementSize
         setElementPosStorage(elementPosRef.current);
     }
 
+    function resetSizeandPos() {
+        setElementPos(initialPos);
+        setElementSize(initialSize);
+        setElementSizeStorage(initialSize);
+        setElementPosStorage(initialPos);
+    }
+
     useEffect(() => {
         document.addEventListener('mousemove', resizeElement);
         document.addEventListener('mouseup', endResize);
-        setElementPos(elementPosStorage);
-        setElementSize(elementSizeStorage);
+        if (window.screen.width <= elementPosStorage.x) {
+            setElementPos({x: window.screen.width - elementSizeStorage.width, y: elementPosStorage.y});
+            setElementSize(elementSizeStorage);
+        } else {
+            setElementPos(elementPosStorage);
+            setElementSize(elementSizeStorage);
+        }
 
         return () => {
             document.removeEventListener('mousemove', resizeElement);
@@ -136,7 +149,8 @@ export function useElementMover(initialPos: ElementPos, initialSize: ElementSize
         elementSize,
         initMove,
         moveElement,
-        endMove
+        endMove,
+        resetSizeandPos
     };
 
 }

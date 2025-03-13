@@ -4,6 +4,8 @@ import { CubeState } from "./scrambleProcessing";
 import CubeFace from "./subs/cubeFace";
 import { useElementMover } from "../../hooks/useElementMover";
 import { ResizingPart } from "../../hooks/useElementMover";
+import { subscribeCustomEvent, unsubscribeCustomEvent } from "../../util/customEvent";
+import { useViewersHandlingStore } from "../../store/useStore";
 
 function ScrambleViewer(props: {scramble: string}) {
 
@@ -18,7 +20,8 @@ function ScrambleViewer(props: {scramble: string}) {
         R: ['R', 'R', 'R', 'R', 'R', 'R', 'R', 'R', 'R']
     });
     const {getScrambleCubeState} = useScramble();
-    const {isCliking, isResizing, isReSizable, elementPos, elementSize, initMove, moveElement, endMove} = useElementMover({x: window.innerWidth-450, y: window.innerHeight/2-175}, {width: 400, height: 350}, 'sc-viewer');
+    const {isCliking, isResizing, isReSizable, elementPos, elementSize, initMove, moveElement, endMove, resetSizeandPos} = useElementMover({x: window.innerWidth-450, y: window.innerHeight/2-175}, {width: 400, height: 350}, 'sc-viewer');
+    const isOpenedScrambleViewer = useViewersHandlingStore((state) => state.isOpenedScrambleViewer);
 
     function showResizecursor(resizeType: ResizingPart) {
         if (resizeType === ResizingPart.BOT_RIGHT) return 'cursor-nwse-resize';
@@ -31,6 +34,11 @@ function ScrambleViewer(props: {scramble: string}) {
         setCube(getScrambleCubeState('3x3x3', scramble));
     }, [scramble]);
 
+    useEffect(() => {
+        subscribeCustomEvent('reset-display', resetSizeandPos);
+        return () => unsubscribeCustomEvent('reset-display', resetSizeandPos);
+    }, []);
+
     // xl:left-[calc(100vw-420px)] lg:left-[calc(100vw-320px)] md:left-[calc(100vw-420px)]
     // xl:w-[400px] lg:w-[300px] md:w-[200px]
 
@@ -39,7 +47,7 @@ function ScrambleViewer(props: {scramble: string}) {
         <>
             <div 
                 style={{top: `${elementPos.y}px`, left: `${elementPos.x}px`, width: `${elementSize.width}px`, height: `${elementSize.height}px`}}
-                className={`absolute top-[30vh] bg-[#F4F4F7] rounded-md p-[10px] ${isCliking || isResizing ? 'opacity-75' : 'opacity-100'} ${showResizecursor(isReSizable)} min-h-fit min-w-[200px] flex justify-content items-center`}
+                className={`absolute top-[30vh] bg-[#F4F4F7] rounded-md p-[10px] ${isCliking || isResizing ? 'opacity-75' : 'opacity-100'} ${showResizecursor(isReSizable)} min-h-fit min-w-[200px] ${isOpenedScrambleViewer ? 'flex' : 'hidden'} justify-content items-center`}
                 onMouseDown={initMove}
                 onMouseMove={moveElement}
                 onMouseUp={endMove}

@@ -3,6 +3,8 @@ import RecordItem from "./subs/recordItem";
 import { SolvedRecord } from "../../util/record.util";
 import { useElementMover } from "../../hooks/useElementMover";
 import { ResizingPart } from "../../hooks/useElementMover";
+import { subscribeCustomEvent, unsubscribeCustomEvent } from "../../util/customEvent";
+import { useViewersHandlingStore } from "../../store/useStore";
 
 interface RecordListProps {
     recordList: SolvedRecord[];
@@ -14,7 +16,8 @@ function RecordList(props: RecordListProps) {
     const {recordList, deleteRecord, changePenalty} = props;
     const scrollRef = useRef<HTMLDivElement | null>(null);
 
-    const {isCliking, isResizing, isReSizable, elementPos, elementSize, initMove, moveElement, endMove} = useElementMover({x: 50, y: window.innerHeight/2-250}, {width: 300, height: 500}, 'record-list');
+    const {isCliking, isResizing, isReSizable, elementPos, elementSize, initMove, moveElement, endMove, resetSizeandPos} = useElementMover({x: 50, y: window.innerHeight/2-250}, {width: 300, height: 500}, 'record-list');
+    const isOpenedRecordList = useViewersHandlingStore((state) => state.isOpenedRecordList);
     
     function showResizecursor(resizeType: ResizingPart) {
         if (resizeType === ResizingPart.BOT_RIGHT) return 'cursor-nwse-resize';
@@ -30,14 +33,15 @@ function RecordList(props: RecordListProps) {
     }, [recordList.length]);
 
     useEffect(() => {
-        console.log(elementPos);
-    }, [elementPos]);
+        subscribeCustomEvent('reset-display', resetSizeandPos);
+        return () => unsubscribeCustomEvent('reset-display', resetSizeandPos);
+    }, []);
 
     return (
         <>
             <div 
                 style={{top: `${elementPos.y}px`, left: `${elementPos.x}px`, width: `${elementSize.width}px`, height: `${elementSize.height}px`}}
-                className={`absolute container min-w-[220px] bg-[#F4F4F7] rounded-md p-[15px] ${isCliking || isResizing ? 'opacity-75' : 'opacity-100'} ${showResizecursor(isReSizable)}`}
+                className={`absolute container min-w-[220px] bg-[#F4F4F7] rounded-md p-[15px] ${isCliking || isResizing ? 'opacity-75' : 'opacity-100'} ${showResizecursor(isReSizable)} ${isOpenedRecordList ? 'block' : 'hidden'}`}
                 onMouseDown={initMove}
                 onMouseMove={moveElement}
                 onMouseUp={endMove}

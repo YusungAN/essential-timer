@@ -5,6 +5,7 @@ import { useRecords } from "./hooks/useRecords";
 import RecordList from "./components/recordList/recordList";
 import StatsViewer from "./components/statsViewer/StatsViewer";
 import ScrambleViewer from "./components/scrambleViewer/scrambleViewer";
+import { useViewersHandlingStore } from "./store/useStore";
 
 function App() {
     const lastStopTimeRef = useRef(0);
@@ -14,6 +15,12 @@ function App() {
     const {recordList, addRecord, deleteRecord, changePenalty} = useRecords();
 
     const [isSpaceDowned, setIsSpaceDowned] = useState(false);
+
+    const isOpenedRecordList = useViewersHandlingStore((state) => state.isOpenedRecordList);
+    const isOpenedScrambleViewer = useViewersHandlingStore((state) => state.isOpenedScrambleViewer);
+    const changeRecordListOpenStatus = useViewersHandlingStore((state) => state.changeRecordListOpenStatus);
+    const changeScrambleViewerOpenStatus = useViewersHandlingStore((state) => state.changeScrambleViewerOpenStatus);
+    const resetViewers = useViewersHandlingStore((state) => state.resetSetting);
 
 
     function handleStartTimer(e: KeyboardEvent) {
@@ -46,6 +53,9 @@ function App() {
     return (
         <>
             <div className="flex flex-col w-full items-center">
+                <button onClick={() => changeRecordListOpenStatus(!isOpenedRecordList)}>{isOpenedRecordList ? 'close' : 'open'} record list</button>
+                <button onClick={() => changeScrambleViewerOpenStatus(!isOpenedScrambleViewer)}>{isOpenedScrambleViewer ? 'close' : 'open'} scramble viewer</button>
+                <button onClick={resetViewers}>reset position and size</button>
                 <div className='w-full text-center pl-[5vw] pr-[5vw] pt-[2vh] pb-[2vh] text-3xl'>{scramble}</div>
                 <div className={`w-full text-center pt-[20vh] pb-[5vh] text-9xl tabular-nums ${isSpaceDowned ? 'text-[#F58432]' : 'text-black'}`}>{timeStr}</div>
                 <StatsViewer recordList={recordList} />

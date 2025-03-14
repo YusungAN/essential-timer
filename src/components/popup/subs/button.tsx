@@ -13,11 +13,6 @@ function Button(props: ButtonProps) {
     const [isClicking, setIsClicking] = useState(false);
     const {width, height, text, color = '#9696A2', onClick} = props;
 
-    const widthClass = `w-[${width}]`;
-    const heightClass = `h-[${height}]`;
-    const lineHeightClass = `leading-[${height}]`
-    const colorClass = `bg-[${color}]`;
-
     function handleMouseUp() {
         setIsClicking(false);
         onClick();

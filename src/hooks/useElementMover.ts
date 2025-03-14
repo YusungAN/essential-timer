@@ -38,7 +38,7 @@ export function useElementMover(initialPos: ElementPos, initialSize: ElementSize
     const elementPosRef = useRef(initialPos);
     const isResizingRef = useRef(false);
     const elementSizeRef = useRef(initialSize);
-    
+
     const [elementPosStorage, setElementPosStorage] = useLocalStorage(`${storedInfoKey}-pos`, initialPos);
     const [elementSizeStorage, setElementSizeStorage] = useLocalStorage(`${storedInfoKey}-size`, initialSize);
 
@@ -84,6 +84,7 @@ export function useElementMover(initialPos: ElementPos, initialSize: ElementSize
     }
 
     function resizeElement(e: MouseEvent) {
+        document.body.style.userSelect = "none";
         if (firstResizePosRef.current === null) return;
         let newWidth = elementSize.width;
         let newHeight = elementSize.height;
@@ -105,6 +106,7 @@ export function useElementMover(initialPos: ElementPos, initialSize: ElementSize
     }
 
     function endResize() {
+        document.body.style.userSelect = "all";
         firstResizePosRef.current = {x: 0, y: 0};
         setIsResizing(ResizingPart.NO_RESIZING);
         isResizingRef.current = false;

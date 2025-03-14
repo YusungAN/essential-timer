@@ -1,4 +1,4 @@
-type UsedCustomEvents = 'reset-display';
+type UsedCustomEvents = 'reset-display' | 'open-popup';
 
 // used for sc-viewer-display, rc-list-display
 export interface ViewerDisplayStatus {

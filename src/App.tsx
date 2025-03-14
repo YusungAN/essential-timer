@@ -5,7 +5,8 @@ import { useRecords } from "./hooks/useRecords";
 import RecordList from "./components/recordList/recordList";
 import StatsViewer from "./components/statsViewer/StatsViewer";
 import ScrambleViewer from "./components/scrambleViewer/scrambleViewer";
-import { useViewersHandlingStore } from "./store/useStore";
+import { useViewersHandlingStore } from "./store/useViewersHandleStore";
+import Popup from "./components/popup/popup";
 
 function App() {
     const lastStopTimeRef = useRef(0);
@@ -40,6 +41,11 @@ function App() {
     useEffect(() => {
         document.addEventListener('keyup', handleStartTimer, false);
         document.addEventListener('keydown', handleStopTimer, false);
+
+        return () => {
+            document.removeEventListener('keyup', handleStartTimer, false);
+            document.removeEventListener('keydown', handleStopTimer, false);
+        }
     }, []);
 
     useEffect(() => {
@@ -64,6 +70,7 @@ function App() {
                 </div>
             </div>
             <ScrambleViewer scramble={scramble} />
+            <Popup />
         </>
     )
 }

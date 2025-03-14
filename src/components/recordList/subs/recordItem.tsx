@@ -1,6 +1,7 @@
 import { FaDeleteLeft } from "react-icons/fa6";
 import { SolvedRecord } from "../../../util/record.util";
 import { MouseEvent } from "react";
+import { usePopupStore } from "../../../store/usePopupStore";
 
 
 interface RecordItemProps {
@@ -12,6 +13,8 @@ interface RecordItemProps {
 
 function RecordItem(props: RecordItemProps) {
     const {record, onDelete, changePenalty} = props;
+
+    const openPopUp = usePopupStore((state) => state.openPopUp);
 
     function time2Str(time: number) {
         const minutes = Math.floor(time / 60000);
@@ -26,6 +29,16 @@ function RecordItem(props: RecordItemProps) {
         changePenalty(penaltyType);
     }
 
+    function deleteRecord() {
+        openPopUp({
+            description: '정말 기록을 삭제하시겠습니까?', 
+            popupType: 'confirm', 
+            yesButtonText: 'Delete', 
+            noButtonText: 'Cancel',
+            actionOnYes: onDelete
+        });
+    }
+
     return <div className="flex w-full bg-[#E5E5EB] rounded-md p-[10px] mb-[5px] mt-[5px] justify-between items-center">
         <div className="flex">
             {/* <div className="text-gray-400 mr-[5px]">{index+1}.</div> */}
@@ -34,7 +47,7 @@ function RecordItem(props: RecordItemProps) {
         <div className="flex w-[30%] max-w-[100px] justify-between items-center text-sm min-w-[100px]">
             <div onClick={e => handleChangePenalty(e, '+2')} onMouseDown={(e) => e.stopPropagation()}>+2</div>
             <div onClick={e => handleChangePenalty(e, 'DNF')} onMouseDown={(e) => e.stopPropagation()}>DNF</div>
-            <FaDeleteLeft className="w-4 h-4" onClick={onDelete} />
+            <FaDeleteLeft className="w-4 h-4" onClick={deleteRecord} />
         </div>
     </div>
 }

@@ -5,7 +5,7 @@ import CubeFace from "./subs/cubeFace";
 import { useElementMover } from "../../hooks/useElementMover";
 import { ResizingPart } from "../../hooks/useElementMover";
 import { subscribeCustomEvent, unsubscribeCustomEvent } from "../../util/customEvent";
-import { useViewersHandlingStore } from "../../store/useStore";
+import { useViewersHandlingStore } from "../../store/useViewersHandleStore";
 
 function ScrambleViewer(props: {scramble: string}) {
 

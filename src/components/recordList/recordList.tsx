@@ -4,7 +4,7 @@ import { SolvedRecord } from "../../util/record.util";
 import { useElementMover } from "../../hooks/useElementMover";
 import { ResizingPart } from "../../hooks/useElementMover";
 import { subscribeCustomEvent, unsubscribeCustomEvent } from "../../util/customEvent";
-import { useViewersHandlingStore } from "../../store/useStore";
+import { useViewersHandlingStore } from "../../store/useViewersHandleStore";
 
 interface RecordListProps {
     recordList: SolvedRecord[];

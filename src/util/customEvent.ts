@@ -1,19 +1,20 @@
-type UsedCustomEvents = 'reset-display' | 'open-popup';
-
-// used for sc-viewer-display, rc-list-display
-export interface ViewerDisplayStatus {
-    opened: boolean
-}
+type UsedCustomEvents = "reset-display" | "open-popup";
 
 export function emitCustomEvent<T>(eventName: UsedCustomEvents, data?: T) {
-    const event = new CustomEvent(eventName, { detail: data });
-    window.dispatchEvent(event);
+  const event = new CustomEvent(eventName, { detail: data });
+  window.dispatchEvent(event);
 }
 
-export function subscribeCustomEvent(eventName: UsedCustomEvents, listener: (...args: any[]) => any) {
-    window.addEventListener(eventName, listener);
+export function subscribeCustomEvent(
+  eventName: UsedCustomEvents,
+  listener: (...args: any[]) => any
+) {
+  window.addEventListener(eventName, listener);
 }
 
-export function unsubscribeCustomEvent(eventName: UsedCustomEvents, listener: (...args: any[]) => any) {
-    window.removeEventListener(eventName, listener);
+export function unsubscribeCustomEvent(
+  eventName: UsedCustomEvents,
+  listener: (...args: any[]) => any
+) {
+  window.removeEventListener(eventName, listener);
 }

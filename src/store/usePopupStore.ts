@@ -3,7 +3,7 @@ import { emitCustomEvent } from "../util/customEvent";
 
 export interface PopUpArgs {
   description: string;
-  popupType: "alert" | "confirm";
+  popupType: "alert" | "confirm" | "prompt";
   yesButtonText: string;
   noButtonText?: string;
   actionOnYes?: (...args: any[]) => any;
@@ -12,15 +12,18 @@ export interface PopUpArgs {
 
 type State = {
   isOpen: boolean;
+  prompt: string | undefined;
 };
 
 type Action = {
   openPopUp: (args: PopUpArgs) => void;
   closePopUp: () => void;
+  setPropmt: (str: string) => void;
 };
 
 export const usePopupStore = create<State & Action>((set) => ({
   isOpen: false,
+  prompt: '',
   openPopUp: (args: PopUpArgs) => {
     const {
       description,
@@ -41,4 +44,7 @@ export const usePopupStore = create<State & Action>((set) => ({
     });
   },
   closePopUp: () => set({ isOpen: false }),
+  setPropmt: (str) => {
+    set({prompt: str});
+  }
 }));

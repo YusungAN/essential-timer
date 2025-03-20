@@ -165,6 +165,111 @@ class IndexedDBClient {
       };
     });
   }
+
+  public static async getSessionIDList() {
+    const idxDB = await IndexedDBClient.getInstance();
+
+    return new Promise<string[]>((resolve, reject) => {
+      if (!IndexedDBClient.instance) {
+        const request = indexedDB.open("essential-timer-db");
+
+        request.onupgradeneeded = (e: IDBVersionChangeEvent) => {
+          const db = (e.target as IDBOpenDBRequest).result;
+          db.createObjectStore("record-session", { keyPath: "session_id" });
+        };
+
+        request.onsuccess = () => {
+          IndexedDBClient.instance = request.result;
+          const tx = request.result.transaction("record-session", "readonly");
+          const store = tx.objectStore("record-session");
+          const cursorReq = store.openCursor();
+
+          const sessionIDList: string[] = [];
+
+          cursorReq.onsuccess = () => {
+            const cursor = cursorReq.result;
+            if (cursor) {
+              sessionIDList.push(cursor.value.session_id);
+              cursor.continue();
+            } else {
+              resolve(sessionIDList);
+            }
+          };
+
+          cursorReq.onerror = () => {
+            reject();
+          };
+        };
+      } else {
+        const tx = idxDB.transaction("record-session", "readwrite");
+        const store = tx.objectStore("record-session");
+
+        const cursorReq = store.openCursor();
+
+        const sessionIDList: string[] = [];
+
+        cursorReq.onsuccess = () => {
+          const cursor = cursorReq.result;
+          if (cursor) {
+            // console.log(cursor.value);
+            sessionIDList.push(cursor.value.session_id);
+            cursor.continue();
+          } else {
+            resolve(sessionIDList);
+          }
+        };
+
+        cursorReq.onerror = () => {
+          reject();
+        };
+      }
+    });
+  }
+
+  public static async addSession(newSesisonID: string) {
+    const idxDB = await IndexedDBClient.getInstance();
+
+    return new Promise<void>((resolve, reject) => {
+      const tx = idxDB.transaction("record-session", "readwrite");
+      const store = tx.objectStore("record-session");
+
+      const addSessionReq = store.add({
+        session_id: newSesisonID,
+        records: [],
+      });
+
+      addSessionReq.onsuccess = () => {
+        resolve();
+      };
+
+      addSessionReq.onerror = () => {
+        reject();
+      }
+    });
+  }
+
+  public static async deleteSession(target: string) {
+    const idxDB = await IndexedDBClient.getInstance();
+
+    return new Promise<void>((resolve, reject) => {
+      const tx = idxDB.transaction("record-session", "readwrite");
+      const store = tx.objectStore("record-session");
+
+      const deleteReq = store.delete(target);
+
+      deleteReq.onsuccess = () => {
+        resolve();
+      };
+
+      deleteReq.onerror = () => {
+        reject();
+      }
+    });
+  }
+
+  // public static async renameSession(target: string, newName: string) {
+
+  // }
 }
 
 export default IndexedDBClient;

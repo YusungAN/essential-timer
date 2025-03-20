@@ -8,15 +8,30 @@ import {
   unsubscribeCustomEvent,
 } from "../../util/customEvent";
 import { useViewersHandlingStore } from "../../store/useViewersHandleStore";
+import SessionSelector from "../sessionSelector/sessionSelector";
 
 interface RecordListProps {
   recordList: SolvedRecord[];
   deleteRecord: (target: SolvedRecord) => void;
   changePenalty: (target: SolvedRecord, penalty: "" | "+2" | "DNF") => void;
+  nowSession: string;
+  sessionIDList: string[];
+  onSessionChange: (sessionID: string) => void;
+  addSession: (newSessionID: string) => void;
+  deleteSession: (targetID: string) => void;
 }
 
 function RecordList(props: RecordListProps) {
-  const { recordList, deleteRecord, changePenalty } = props;
+  const {
+    recordList,
+    deleteRecord,
+    changePenalty,
+    nowSession,
+    sessionIDList,
+    onSessionChange,
+    addSession,
+    deleteSession
+  } = props;
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
   const {
@@ -75,7 +90,14 @@ function RecordList(props: RecordListProps) {
         onMouseUp={endMove}
         onMouseLeave={endMove}
       >
-        <div ref={scrollRef} className="overflow-auto h-full">
+        <SessionSelector
+          nowSession={nowSession}
+          sessionIDList={sessionIDList}
+          onSelect={onSessionChange}
+          addSession={addSession}
+          deleteSession={deleteSession}
+        />
+        <div ref={scrollRef} className="overflow-auto h-[95%]">
           {recordList.map((item, idx) => {
             return (
               <RecordItem

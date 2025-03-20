@@ -11,7 +11,17 @@ import Popup from "./components/popup/popup";
 function App() {
   const { scramble, setNewScramble } = useScramble();
   const { timeStr, record, startTimer, stopTiemr, isRunning } = useTimer();
-  const { recordList, addRecord, deleteRecord, changePenalty } = useRecords();
+  const {
+    recordList,
+    addRecord,
+    deleteRecord,
+    changePenalty,
+    sessionID,
+    sessionIDLIst,
+    changeSession,
+    addSession,
+    deleteSession
+  } = useRecords();
 
   const [isSpaceDowned, setIsSpaceDowned] = useState(false);
 
@@ -90,6 +100,11 @@ function App() {
             recordList={recordList}
             deleteRecord={deleteRecord}
             changePenalty={changePenalty}
+            nowSession={sessionID}
+            sessionIDList={sessionIDLIst}
+            onSessionChange={changeSession}
+            addSession={addSession}
+            deleteSession={deleteSession}
           />
         </div>
       </div>

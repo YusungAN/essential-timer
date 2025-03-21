@@ -7,6 +7,8 @@ import StatsViewer from "./components/statsViewer/StatsViewer";
 import ScrambleViewer from "./components/scrambleViewer/scrambleViewer";
 import { useViewersHandlingStore } from "./store/useViewersHandleStore";
 import Popup from "./components/popup/popup";
+import supabase from "./supabase";
+import { useLoginInfo } from "./store/useLoginStore";
 
 function App() {
   const { scramble, setNewScramble } = useScramble();
@@ -20,7 +22,7 @@ function App() {
     sessionIDLIst,
     changeSession,
     addSession,
-    deleteSession
+    deleteSession,
   } = useRecords();
 
   const [isSpaceDowned, setIsSpaceDowned] = useState(false);
@@ -38,6 +40,9 @@ function App() {
     (state) => state.changeScrambleViewerOpenStatus
   );
   const resetViewers = useViewersHandlingStore((state) => state.resetSetting);
+  const updateLoginInfo = useLoginInfo((state) => state.updateLoginInfo);
+  const isLogged = useLoginInfo((state) => state.isLogged);
+  const email = useLoginInfo((state) => state.email);
 
   function handleStartTimer(e: KeyboardEvent) {
     if (e.key === " ") {
@@ -53,10 +58,33 @@ function App() {
     }
   }
 
+  async function login() {
+    if (!isLogged) {
+      supabase.auth.signInWithOAuth({
+        provider: "google",
+      });
+    } else {
+      const { error } = await supabase.auth.signOut();
+      if (error) {
+        console.log(error);
+        return;
+      }
+      updateLoginInfo(false, "", "");
+    }
+  }
+
   useEffect(() => {
     document.addEventListener("keyup", handleStartTimer, false);
     document.addEventListener("keydown", handleStopTimer, false);
 
+    supabase.auth.getUser().then((user) => {
+      console.log(user);
+      updateLoginInfo(
+        user.data.user !== null,
+        user.data.user?.id !== undefined ? user.data.user.id : "",
+        user.data.user?.email !== undefined ? user.data.user.email : ""
+      );
+    });
     return () => {
       document.removeEventListener("keyup", handleStartTimer, false);
       document.removeEventListener("keydown", handleStopTimer, false);
@@ -73,6 +101,8 @@ function App() {
   return (
     <>
       <div className="flex flex-col w-full items-center">
+        <button onClick={login}>{isLogged ? "logout" : "login"}</button>
+        <div>{isLogged ? `logged with ${email}` : ""}</div>
         <button onClick={() => changeRecordListOpenStatus(!isOpenedRecordList)}>
           {isOpenedRecordList ? "close" : "open"} record list
         </button>

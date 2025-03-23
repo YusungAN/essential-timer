@@ -2,13 +2,13 @@ import supabase from "../supabase";
 import { SolvedRecord } from "./record.util";
 
 export const SupabaseAPI = {
-    getSessionRecords: getSessionRecords,
-    addRecord: addRecord,
-    deleteRecord: deleteRecord,
-    changePenalty: changePenalty,
-    getSessionIDList: getSessionIDList,
-    addSession: addSession,
-    deleteSession: deleteSession
+  getSessionRecords: getSessionRecords,
+  addRecord: addRecord,
+  deleteRecord: deleteRecord,
+  changePenalty: changePenalty,
+  getSessionIDList: getSessionIDList,
+  addSession: addSession,
+  deleteSession: deleteSession,
 };
 
 async function getSessionRecords(sessionID: string) {
@@ -33,12 +33,10 @@ async function addRecord(sessionID: string, record: SolvedRecord) {
   try {
     const user = await supabase.auth.getUser();
     if (user.data.user) {
-      const { status } = await supabase
-        .from("record")
-        .insert({
-          sessionid: sessionID,
-          ...record,
-        });
+      const { status } = await supabase.from("record").insert({
+        sessionid: sessionID,
+        ...record,
+      });
       if (status === 201) return;
       throw Error();
     }
@@ -132,11 +130,18 @@ async function deleteSession(target: string) {
         .delete()
         .eq("user_id", user.data.user.id)
         .eq("session_name", target);
+
+      await supabase
+        .from("record")
+        .delete()
+        .eq("userid", user.data.user.id)
+        .eq("sessionid", target);
+
       if (status === 204) return;
       throw Error();
     }
   } catch (e) {
     console.log(e);
-    alert("기록을 삭제하는데 실패했습니다.");
+    alert("세션을 삭제하는데 실패했습니다.");
   }
 }

@@ -3,15 +3,17 @@ import { useScramble } from "./hooks/useScramble";
 import { useTimer } from "./hooks/useTimer";
 import { useRecords } from "./hooks/useRecords";
 import RecordList from "./components/recordList/recordList";
-import StatsViewer from "./components/statsViewer/StatsViewer";
 import ScrambleViewer from "./components/scrambleViewer/scrambleViewer";
-import { useViewersHandlingStore } from "./store/useViewersHandleStore";
 import Popup from "./components/popup/popup";
 import supabase from "./supabase";
 import { useLoginInfo } from "./store/useLoginStore";
+import { usePopupStore } from "./store/usePopupStore";
+import CubeSelector from "./components/cubeSelector/cubeSelector";
+import TempFunctions from "./components/tempFunctions/tempFunctions";
 
 function App() {
-  const { scramble, setNewScramble } = useScramble();
+  const { scramble, setNewScramble, nowCubeType, changeCubeType, cubeList } =
+    useScramble();
   const { timeStr, record, startTimer, stopTiemr, isRunning } = useTimer();
   const {
     recordList,
@@ -27,49 +29,20 @@ function App() {
 
   const [isSpaceDowned, setIsSpaceDowned] = useState(false);
 
-  const isOpenedRecordList = useViewersHandlingStore(
-    (state) => state.isOpenedRecordList
-  );
-  const isOpenedScrambleViewer = useViewersHandlingStore(
-    (state) => state.isOpenedScrambleViewer
-  );
-  const changeRecordListOpenStatus = useViewersHandlingStore(
-    (state) => state.changeRecordListOpenStatus
-  );
-  const changeScrambleViewerOpenStatus = useViewersHandlingStore(
-    (state) => state.changeScrambleViewerOpenStatus
-  );
-  const resetViewers = useViewersHandlingStore((state) => state.resetSetting);
   const updateLoginInfo = useLoginInfo((state) => state.updateLoginInfo);
-  const isLogged = useLoginInfo((state) => state.isLogged);
-  const email = useLoginInfo((state) => state.email);
 
   function handleStartTimer(e: KeyboardEvent) {
-    if (e.key === " ") {
+    if (e.key === " " && !usePopupStore.getState().isOpen) {
       setIsSpaceDowned(false);
       startTimer();
     }
   }
 
   function handleStopTimer(e: KeyboardEvent) {
-    if (e.key === " ") {
+    console.log(e.key);
+    if (e.key === " " && !usePopupStore.getState().isOpen) {
       setIsSpaceDowned(true);
       stopTiemr();
-    }
-  }
-
-  async function login() {
-    if (!isLogged) {
-      supabase.auth.signInWithOAuth({
-        provider: "google",
-      });
-    } else {
-      const { error } = await supabase.auth.signOut();
-      if (error) {
-        console.log(error);
-        return;
-      }
-      updateLoginInfo(false, "", "");
     }
   }
 
@@ -78,7 +51,6 @@ function App() {
     document.addEventListener("keydown", handleStopTimer, false);
 
     supabase.auth.getUser().then((user) => {
-      console.log(user);
       updateLoginInfo(
         user.data.user !== null,
         user.data.user?.id !== undefined ? user.data.user.id : "",
@@ -94,39 +66,23 @@ function App() {
   useEffect(() => {
     if (!isRunning) {
       if (record !== 0) addRecord(scramble, record, "");
-      setNewScramble("3x3x3");
+      setNewScramble(nowCubeType);
     }
-  }, [isRunning]);
+  }, [isRunning, nowCubeType]);
 
   return (
     <>
       <div className="flex flex-col w-full items-center">
-        <button onClick={login}>{isLogged ? "logout" : "login"}</button>
-        <div>{isLogged ? `logged with ${email}` : ""}</div>
-        <button onClick={() => changeRecordListOpenStatus(!isOpenedRecordList)}>
-          {isOpenedRecordList ? "close" : "open"} record list
-        </button>
-        <button
-          onClick={() =>
-            changeScrambleViewerOpenStatus(!isOpenedScrambleViewer)
-          }
-        >
-          {isOpenedScrambleViewer ? "close" : "open"} scramble viewer
-        </button>
-        <button onClick={resetViewers}>reset position and size</button>
+        <CubeSelector
+          nowCubeType={nowCubeType}
+          cubeList={cubeList}
+          onSelect={changeCubeType}
+        />
         <div className="w-full text-center pl-[5vw] pr-[5vw] pt-[2vh] pb-[2vh] text-3xl">
           {scramble}
         </div>
-        <div
-          className={`w-full text-center pt-[20vh] pb-[5vh] text-9xl tabular-nums ${
-            isSpaceDowned ? "text-[#F58432]" : "text-black"
-          }`}
-        >
-          {timeStr}
-        </div>
-        <StatsViewer recordList={recordList} />
-        <div className="grid grid-cols-[30vw_auto] grid-rows-1">
-          <RecordList
+        {/* <div className="flex justify-between w-full"> */}
+          <RecordList // record list section
             recordList={recordList}
             deleteRecord={deleteRecord}
             changePenalty={changePenalty}
@@ -136,9 +92,20 @@ function App() {
             addSession={addSession}
             deleteSession={deleteSession}
           />
+          <div>
+            {/* timer section */}
+            <div
+              className={`w-full text-center pt-[20vh] pb-[5vh] text-9xl tabular-nums ${
+                isSpaceDowned ? "text-[#F58432]" : "text-black"
+              }`}
+            >
+              {timeStr}
+            </div>
+            <TempFunctions recordList={recordList} />
+          </div>
+          <ScrambleViewer scramble={scramble} />
         </div>
-      </div>
-      <ScrambleViewer scramble={scramble} />
+      {/* </div> */}
       <Popup />
     </>
   );

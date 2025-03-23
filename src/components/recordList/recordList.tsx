@@ -1,12 +1,12 @@
 import { useRef, useEffect } from "react";
 import RecordItem from "./subs/recordItem";
 import { SolvedRecord } from "../../util/record.util";
-import { useElementMover } from "../../hooks/useElementMover";
-import { ResizingPart } from "../../hooks/useElementMover";
-import {
-  subscribeCustomEvent,
-  unsubscribeCustomEvent,
-} from "../../util/customEvent";
+// import { useElementMover } from "../../hooks/useElementMover";
+// import { ResizingPart } from "../../hooks/useElementMover";
+// import {
+//   subscribeCustomEvent,
+//   unsubscribeCustomEvent,
+// } from "../../util/customEvent";
 import { useViewersHandlingStore } from "../../store/useViewersHandleStore";
 import SessionSelector from "../sessionSelector/sessionSelector";
 
@@ -30,35 +30,35 @@ function RecordList(props: RecordListProps) {
     sessionIDList,
     onSessionChange,
     addSession,
-    deleteSession
+    deleteSession,
   } = props;
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
-  const {
-    isCliking,
-    isResizing,
-    isReSizable,
-    elementPos,
-    elementSize,
-    initMove,
-    moveElement,
-    endMove,
-    resetSizeandPos,
-  } = useElementMover(
-    { x: 50, y: window.innerHeight / 2 - 250 },
-    { width: 300, height: 500 },
-    "record-list"
-  );
+  // const {
+  //   isCliking,
+  //   isResizing,
+  //   isReSizable,
+  //   elementPos,
+  //   elementSize,
+  //   initMove,
+  //   moveElement,
+  //   endMove,
+  //   resetSizeandPos,
+  // } = useElementMover(
+  //   { x: 50, y: window.innerHeight / 2 - 250 },
+  //   { width: 300, height: 500 },
+  //   "record-list"
+  // );
   const isOpenedRecordList = useViewersHandlingStore(
     (state) => state.isOpenedRecordList
   );
 
-  function showResizecursor(resizeType: ResizingPart) {
-    if (resizeType === ResizingPart.BOT_RIGHT) return "cursor-nwse-resize";
-    // else if (resizeType === ResizingPart.RIGHT) return 'cursor-ew-resize'
-    // else if (resizeType === ResizingPart.BOTTOM) return 'cursor-ns-resize'
-    return "";
-  }
+  // function showResizecursor(resizeType: ResizingPart) {
+  //   if (resizeType === ResizingPart.BOT_RIGHT) return "cursor-nwse-resize";
+  //   // else if (resizeType === ResizingPart.RIGHT) return 'cursor-ew-resize'
+  //   // else if (resizeType === ResizingPart.BOTTOM) return 'cursor-ns-resize'
+  //   return "";
+  // }
 
   useEffect(() => {
     if (scrollRef.current instanceof HTMLDivElement) {
@@ -66,29 +66,32 @@ function RecordList(props: RecordListProps) {
     }
   }, [recordList.length]);
 
-  useEffect(() => {
-    subscribeCustomEvent("reset-display", resetSizeandPos);
-    return () => unsubscribeCustomEvent("reset-display", resetSizeandPos);
-  }, []);
+  // useEffect(() => {
+  //   subscribeCustomEvent("reset-display", resetSizeandPos);
+  //   return () => unsubscribeCustomEvent("reset-display", resetSizeandPos);
+  // }, []);
 
   return (
     <>
       <div
-        style={{
-          top: `${elementPos.y}px`,
-          left: `${elementPos.x}px`,
-          width: `${elementSize.width}px`,
-          height: `${elementSize.height}px`,
-        }}
-        className={`absolute container min-w-[220px] bg-[#F4F4F7] rounded-md p-[15px] ${
-          isCliking || isResizing ? "opacity-75" : "opacity-100"
-        } ${showResizecursor(isReSizable)} ${
+        // style={{
+        //   top: `${elementPos.y}px`,
+        //   left: `${elementPos.x}px`,
+        //   width: `${elementSize.width}px`,
+        //   height: `${elementSize.height}px`,
+        // }}
+        // className={`absolute container min-w-[220px] bg-[#F4F4F7] rounded-md p-[15px] ${
+        //   isCliking || isResizing ? "opacity-75" : "opacity-100"
+        // } ${showResizecursor(isReSizable)} ${
+        //   isOpenedRecordList ? "block" : "hidden"
+        // }`}
+        // onMouseDown={initMove}
+        // onMouseMove={moveElement}
+        // onMouseUp={endMove}
+        // onMouseLeave={endMove}
+        className={`container w-[300px] h-[500px] bg-[#F4F4F7] rounded-md p-[15px] absolute top-[calc(100vh-500px)] left-[0] ${
           isOpenedRecordList ? "block" : "hidden"
         }`}
-        onMouseDown={initMove}
-        onMouseMove={moveElement}
-        onMouseUp={endMove}
-        onMouseLeave={endMove}
       >
         <SessionSelector
           nowSession={nowSession}
@@ -112,7 +115,7 @@ function RecordList(props: RecordListProps) {
             );
           })}
         </div>
-        <div className="w-[10px] aspect-square border-b-1 border-r-1 absolute top-[calc(100%-10px)] left-[calc(100%-10px)]"></div>
+        {/* <div className="w-[10px] aspect-square border-b-1 border-r-1 absolute top-[calc(100%-10px)] left-[calc(100%-10px)]"></div> */}
       </div>
     </>
   );

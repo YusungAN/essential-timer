@@ -12,6 +12,7 @@
   "dependencies": {
     "@supabase/supabase-js": "^2.49.1",
     "@tailwindcss/vite": "^4.0.9",
+    "cubing": "^0.54.4",
     "nanoid": "^5.1.5",
     "random-word-slugs": "^0.1.7",
     "react": "^19.0.0",

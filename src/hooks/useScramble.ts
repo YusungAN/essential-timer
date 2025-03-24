@@ -1,8 +1,9 @@
 import { useState } from "react";
-import {
-  CubeState,
-  scrambleProcessing,
-} from "../components/scrambleViewer/scrambleProcessing";
+// import {
+//   CubeState,
+//   scrambleProcessing,
+// } from "../components/scrambleViewer/scrambleProcessing";
+import { CubeState, genNxNxNScrambleState } from "../components/scrambleViewer/genNxNxNScrambleState";
 import { randomScrambleForEvent } from "cubing/scramble";
 import { useLocalStorage } from "usehooks-ts";
 
@@ -47,39 +48,21 @@ export function useScramble() {
     return "";
   }
 
-  // function get3x3x3Scramble(): string {
-  //   const scrambleArr: string[] = [];
-  //   let prevMove: string | null = null;
-  //   let prvOfprvMove: string | null = null;
-
-  //   for (let i = 0; i < 25; i++) {
-  //     let move = faces[Math.floor(Math.random() * 6)];
-  //     while (
-  //       move === prevMove ||
-  //       (oppFaceMap[move] === prevMove && move === prvOfprvMove)
-  //     ) {
-  //       move = faces[Math.floor(Math.random() * 6)];
-  //     }
-  //     const modifier = modifiers[Math.floor(Math.random() * 3)];
-
-  //     scrambleArr.push(move + modifier);
-  //     prvOfprvMove = prevMove;
-  //     prevMove = move;
-  //   }
-
-  //   return scrambleArr.join(" ");
-  // }
-
   function getScrambleCubeState(scrambleType: ScrambleType, scramble: string) {
-    if (scrambleType === "3x3x3") return scrambleProcessing(scramble);
+    if (scrambleType === "3x3x3") return genNxNxNScrambleState(scramble, 3);
+    else if (scrambleType === "2x2x2") return genNxNxNScrambleState(scramble, 2);
+    else if (scrambleType === "4x4x4") return genNxNxNScrambleState(scramble, 4);
+    else if (scrambleType === "5x5x5") return genNxNxNScrambleState(scramble, 5);
+    else if (scrambleType === "6x6x6") return genNxNxNScrambleState(scramble, 6);
+    else if (scrambleType === "7x7x7") return genNxNxNScrambleState(scramble, 7);
     else
       return {
-        U: ["U", "U", "U", "U", "U", "U", "U", "U", "U"],
-        D: ["D", "D", "D", "D", "D", "D", "D", "D", "D"],
-        F: ["F", "F", "F", "F", "F", "F", "F", "F", "F"],
-        B: ["B", "B", "B", "B", "B", "B", "B", "B", "B"],
-        L: ["L", "L", "L", "L", "L", "L", "L", "L", "L"],
-        R: ["R", "R", "R", "R", "R", "R", "R", "R", "R"],
+        U: Array(3).map(() => Array(3).fill("U")),
+        D: Array(3).map(() => Array(3).fill("U")),
+        F: Array(3).map(() => Array(3).fill("F")),
+        B: Array(3).map(() => Array(3).fill("B")),
+        R: Array(3).map(() => Array(3).fill("R")),
+        L: Array(3).map(() => Array(3).fill("L")),
       } as CubeState;
   }
 

@@ -10,6 +10,7 @@ import { useLoginInfo } from "./store/useLoginStore";
 import { usePopupStore } from "./store/usePopupStore";
 import CubeSelector from "./components/cubeSelector/cubeSelector";
 import TempFunctions from "./components/tempFunctions/tempFunctions";
+import { useLoading } from "./hooks/useLoading";
 
 function App() {
   const { scramble, setNewScramble, nowCubeType, changeCubeType, cubeList } =
@@ -28,6 +29,7 @@ function App() {
   } = useRecords();
 
   const [isSpaceDowned, setIsSpaceDowned] = useState(false);
+  const [isScrambleLoading, handleSetNewScr] = useLoading(setNewScramble);
 
   const updateLoginInfo = useLoginInfo((state) => state.updateLoginInfo);
 
@@ -39,7 +41,6 @@ function App() {
   }
 
   function handleStopTimer(e: KeyboardEvent) {
-    console.log(e.key);
     if (e.key === " " && !usePopupStore.getState().isOpen) {
       setIsSpaceDowned(true);
       stopTiemr();
@@ -66,7 +67,7 @@ function App() {
   useEffect(() => {
     if (!isRunning) {
       if (record !== 0) addRecord(scramble, record, "");
-      setNewScramble(nowCubeType);
+      handleSetNewScr(nowCubeType);
     }
   }, [isRunning, nowCubeType]);
 
@@ -79,32 +80,32 @@ function App() {
           onSelect={changeCubeType}
         />
         <div className="w-full text-center pl-[5vw] pr-[5vw] pt-[2vh] pb-[2vh] text-3xl">
-          {scramble}
+          {isScrambleLoading ? "Loading..." : scramble}
         </div>
         {/* <div className="flex justify-between w-full"> */}
-          <RecordList // record list section
-            recordList={recordList}
-            deleteRecord={deleteRecord}
-            changePenalty={changePenalty}
-            nowSession={sessionID}
-            sessionIDList={sessionIDLIst}
-            onSessionChange={changeSession}
-            addSession={addSession}
-            deleteSession={deleteSession}
-          />
-          <div>
-            {/* timer section */}
-            <div
-              className={`w-full text-center pt-[20vh] pb-[5vh] text-9xl tabular-nums ${
-                isSpaceDowned ? "text-[#F58432]" : "text-black"
-              }`}
-            >
-              {timeStr}
-            </div>
-            <TempFunctions recordList={recordList} />
+        <RecordList // record list section
+          recordList={recordList}
+          deleteRecord={deleteRecord}
+          changePenalty={changePenalty}
+          nowSession={sessionID}
+          sessionIDList={sessionIDLIst}
+          onSessionChange={changeSession}
+          addSession={addSession}
+          deleteSession={deleteSession}
+        />
+        <div>
+          {/* timer section */}
+          <div
+            className={`w-full text-center pt-[20vh] pb-[5vh] text-9xl tabular-nums ${
+              isSpaceDowned ? "text-[#F58432]" : "text-black"
+            }`}
+          >
+            {timeStr}
           </div>
-          <ScrambleViewer scramble={scramble} />
+          <TempFunctions recordList={recordList} />
         </div>
+        <ScrambleViewer scramble={scramble} cubeType={nowCubeType} isLoading={isScrambleLoading} />
+      </div>
       {/* </div> */}
       <Popup />
     </>

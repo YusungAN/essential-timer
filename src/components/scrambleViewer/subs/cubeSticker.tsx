@@ -1,10 +1,7 @@
 import { CubeColorSticker } from "../../../util/cubeColor";
 
-function CubeSticker(props: {
-  color: "U" | "D" | "F" | "B" | "L" | "R";
-  N: number;
-}) {
-  const { color, N } = props;
+function CubeSticker(props: { color: "U" | "D" | "F" | "B" | "L" | "R" }) {
+  const { color } = props;
 
   return (
     <div

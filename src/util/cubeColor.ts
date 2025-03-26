@@ -33,6 +33,23 @@ class CubeColorSticker {
         return this.COLOR_CODE.R;
     }
   }
+
+  static getSq1Color(color: "U" | "D" | "F" | "B" | "L" | "R") {
+    switch (color) {
+      case "U":
+        return this.COLOR_CODE.D;
+      case "D":
+        return this.COLOR_CODE.U;
+      case "B":
+        return this.COLOR_CODE.L;
+      case "F":
+        return this.COLOR_CODE.R;
+      case "L":
+        return this.COLOR_CODE.B;
+      case "R":
+        return this.COLOR_CODE.F;
+    }
+  }
 }
 
 export { STICKER_COLOR, CubeColorSticker };

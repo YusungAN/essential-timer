@@ -2,6 +2,8 @@ import { ScrambleType, useScramble } from "../../hooks/useScramble";
 import { useState, useEffect } from "react";
 import CubeFace from "./subs/cubeFace";
 import { CubeState } from "./genNxNxNScrambleState";
+import Square1Face from "./subs/square1Face";
+import Square1Slice from "./subs/square1Slice";
 // import { useElementMover } from "../../hooks/useElementMover";
 // import { ResizingPart } from "../../hooks/useElementMover";
 // import {
@@ -9,6 +11,7 @@ import { CubeState } from "./genNxNxNScrambleState";
 //   unsubscribeCustomEvent,
 // } from "../../util/customEvent";
 import { useViewersHandlingStore } from "../../store/useViewersHandleStore";
+import { Square1State } from "./genSquare1ScrambleState";
 
 function ScrambleViewer(props: {
   scramble: string;
@@ -17,7 +20,7 @@ function ScrambleViewer(props: {
 }) {
   const { scramble, cubeType, isLoading } = props;
 
-  const [cube, setCube] = useState<CubeState>({
+  const [cube, setCube] = useState<CubeState | Square1State>({
     U: Array(3)
       .fill("U")
       .map(() => Array(3).fill("U")),
@@ -37,6 +40,30 @@ function ScrambleViewer(props: {
       .fill("L")
       .map(() => Array(3).fill("L")),
   });
+
+  // const [square1, setSquare1] = useState<Square1State>({
+  //   slice: false,
+  //   top: [
+  //     new SquarePiece("U", 1, ["F"]),
+  //     new SquarePiece("U", 2, ["F", "R"]),
+  //     new SquarePiece("U", 1, ["R"]),
+  //     new SquarePiece("U", 2, ["R", "B"]),
+  //     new SquarePiece("U", 1, ["B"]),
+  //     new SquarePiece("U", 2, ["B", "L"]),
+  //     new SquarePiece("U", 1, ["L"]),
+  //     new SquarePiece("U", 2, ["L", "F"]),
+  //   ],
+  //   down: [
+  //     new SquarePiece("D", 1, ["F"]),
+  //     new SquarePiece("D", 2, ["F", "R"]),
+  //     new SquarePiece("D", 1, ["R"]),
+  //     new SquarePiece("D", 2, ["R", "B"]),
+  //     new SquarePiece("D", 1, ["B"]),
+  //     new SquarePiece("D", 2, ["B", "L"]),
+  //     new SquarePiece("D", 1, ["L"]),
+  //     new SquarePiece("D", 2, ["L", "F"]),
+  //   ],
+  // });
 
   const { getScrambleCubeState } = useScramble();
   // const {
@@ -64,6 +91,10 @@ function ScrambleViewer(props: {
   //   // else if (resizeType === ResizingPart.BOTTOM) return 'cursor-ns-resize'
   //   return "";
   // }
+
+  function isNxNxN(obj: CubeState | Square1State) {
+    return (obj as CubeState).U !== undefined;
+  }
 
   useEffect(() => {
     setCube(getScrambleCubeState(cubeType, scramble));
@@ -103,23 +134,32 @@ function ScrambleViewer(props: {
           <div className="w-full flex justify-center">
             <div>Loading...</div>
           </div>
-        ) : (
+        ) : isNxNxN(cube) ? (
           <div className="w-full grid grid-rows-3 grid-cols-4 gap-3">
             <div className="w-full aspect-square"></div>
-            <CubeFace faceColors={cube.U} />
+            <CubeFace faceColors={(cube as CubeState).U} />
             <div className="w-full aspect-square"></div>
             <div className="w-full aspect-square"></div>
-            <CubeFace faceColors={cube.L} />
-            <CubeFace faceColors={cube.F} />
-            <CubeFace faceColors={cube.R} />
-            <CubeFace faceColors={cube.B} />
+            <CubeFace faceColors={(cube as CubeState).L} />
+            <CubeFace faceColors={(cube as CubeState).F} />
+            <CubeFace faceColors={(cube as CubeState).R} />
+            <CubeFace faceColors={(cube as CubeState).B} />
             <div className="w-full aspect-square"></div>
-            <CubeFace faceColors={cube.D} />
+            <CubeFace faceColors={(cube as CubeState).D} />
             <div className="w-full aspect-square"></div>
             <div className="w-full aspect-square"></div>
           </div>
+        ) : (
+          <>
+            {/* <div className="flex"> */}
+              <Square1Face pieces={(cube as Square1State).top} base="U" />
+              <Square1Face pieces={(cube as Square1State).down} base="D" />
+              <Square1Slice isSliced={(cube as Square1State).slice} />
+            {/* </div> */}
+            {/* <Square1Sticker piece={new SquarePiece("U", 2, ["F", "R"])} rotateDeg={0} />
+            <Square1Sticker piece={new SquarePiece("U", 2, ["F", "R"])} rotateDeg={180} /> */}
+          </>
         )}
-        {/* <div className="w-[10px] aspect-square border-b-1 border-r-1 absolute top-[calc(100%-10px)] left-[calc(100%-10px)]"></div> */}
       </div>
     </>
   );

@@ -1,19 +1,16 @@
 import { useState } from "react";
-// import {
-//   CubeState,
-//   scrambleProcessing,
-// } from "../components/scrambleViewer/scrambleProcessing";
 import { CubeState, genNxNxNScrambleState } from "../components/scrambleViewer/genNxNxNScrambleState";
 import { randomScrambleForEvent } from "cubing/scramble";
 import { useLocalStorage } from "usehooks-ts";
+import { genSquare1ScrambleState } from "../components/scrambleViewer/genSquare1ScrambleState";
 
-export type ScrambleType = "2x2x2" | "3x3x3" | "4x4x4" | "5x5x5" | "6x6x6" | "7x7x7";
+export type ScrambleType = "2x2x2" | "3x3x3" | "4x4x4" | "5x5x5" | "6x6x6" | "7x7x7" | "Square-1";
 
 export function useScramble() {
   const [scramble, setScramble] = useState<string>("");
   const [nowCubeType, setNowCubeType] = useLocalStorage<ScrambleType>("cube-type", "3x3x3");
 
-  const cubeList: ScrambleType[] = ["2x2x2", "3x3x3", "4x4x4", "5x5x5", "6x6x6", "7x7x7"];
+  const cubeList: ScrambleType[] = ["2x2x2", "3x3x3", "4x4x4", "5x5x5", "6x6x6", "7x7x7", "Square-1"];
 
   function changeCubeType(newCubeType: ScrambleType) {
     setNowCubeType(newCubeType);
@@ -43,6 +40,9 @@ export function useScramble() {
     } else if (scrambleType === "7x7x7") {
       const scrAlg = await randomScrambleForEvent("777");
       return scrAlg.toString();
+    } else if (scrambleType === "Square-1") {
+      const scrAlg = await randomScrambleForEvent("sq1");
+      return scrAlg.toString();
     }
 
     return "";
@@ -55,10 +55,11 @@ export function useScramble() {
     else if (scrambleType === "5x5x5") return genNxNxNScrambleState(scramble, 5);
     else if (scrambleType === "6x6x6") return genNxNxNScrambleState(scramble, 6);
     else if (scrambleType === "7x7x7") return genNxNxNScrambleState(scramble, 7);
+    else if (scrambleType === "Square-1") return genSquare1ScrambleState(scramble);
     else
       return {
         U: Array(3).map(() => Array(3).fill("U")),
-        D: Array(3).map(() => Array(3).fill("U")),
+        D: Array(3).map(() => Array(3).fill("D")),
         F: Array(3).map(() => Array(3).fill("F")),
         B: Array(3).map(() => Array(3).fill("B")),
         R: Array(3).map(() => Array(3).fill("R")),

@@ -38,7 +38,7 @@ function CubeSelector(props: CubeSelectorProps) {
   return (
     <>
       <div
-        className="bg-[#CFCFD8] w-[100px] rounded-md pb-[5px] pt-[5px] pl-[10px] pr-[10px] flex justify-between items-center"
+        className="bg-[#CFCFD8] w-[120px] rounded-md pb-[5px] pt-[5px] pl-[10px] pr-[10px] flex justify-between items-center"
         onClick={handleDropdownOpen}
         onMouseDown={(e) => e.stopPropagation()}
       >
@@ -47,7 +47,7 @@ function CubeSelector(props: CubeSelectorProps) {
       </div>
       {isOpen ? (
         <>
-          <div className="absolute bg-[#E5E5EB] shadow-sm rounded-md w-[100px]">
+          <div className="absolute bg-[#E5E5EB] shadow-sm rounded-md w-[120px]">
             {cubeList.map((item, idx) => {
               return (
                 <CubeItem

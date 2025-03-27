@@ -8,12 +8,9 @@ function Square1Face(props: { pieces: SquarePiece[], base: "U"|"D" }) {
   return (
     <div className={`w-1/2 h-full relative ${base === "D" ? "scale-y-[-1]" : ""}`}>
       {pieces.map((item, idx) => {
-        // const nowDeg = degSum.current;
-        console.log(item.deg);
         const nowDeg = degSum;
         degSum += item.deg;
-        // degSum.current += item.deg;
-        // console.log(degSum.current, item.deg, degSum.current-item.deg);
+
         return (
           <Square1Sticker
             key={idx}

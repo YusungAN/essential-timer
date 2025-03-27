@@ -106,7 +106,6 @@ export function genSquare1ScrambleState(scramble: string) {
         return true; // break
       }
       if (degSum > 6) throw Error("scramble is wrong");
-      cube.slice = !cube.slice;
       return false;
     });
 
@@ -122,6 +121,7 @@ export function genSquare1ScrambleState(scramble: string) {
       return false;
     });
 
+    cube.slice = !cube.slice;
     const temp = cube.top.slice();
     cube.top = [
       ...cube.down.slice(0, downSliceIdx).reverse(),
@@ -134,6 +134,7 @@ export function genSquare1ScrambleState(scramble: string) {
   }
 
   const scrambleArr = scramble.split("/");
+  console.log(scrambleArr);
   const scrLen = scrambleArr.length;
   scrambleArr.forEach((item) => {
     item = item.trim();

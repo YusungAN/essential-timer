@@ -62,7 +62,7 @@ function SessionSelector(props: SessionSelectorProps) {
       </div>
       {isOoen ? (
         <>
-          <div className="absolute bg-[#E5E5EB] shadow-sm rounded-md w-[calc(100%-30px)]">
+          <div className="absolute bg-[#E5E5EB] shadow-sm rounded-md w-[calc(100%-30px)] z-[10]">
             {sessionIDList.map((item, idx) => {
               return (
                 <SessionItem

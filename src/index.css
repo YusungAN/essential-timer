@@ -1,5 +1,30 @@
 @import "tailwindcss";
 
 @theme {
-    --sc-view-initial-left: calc(100vw - 420px);
+  /*font*/
+  --font-pretendard: "Pretendard Variable", Pretendard, -apple-system,
+    BlinkMacSystemFont, system-ui, Roboto, "Helvetica Neue", "Segoe UI",
+    "Apple SD Gothic Neo", "Noto Sans KR", "Malgun Gothic", "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", sans-serif;
+  /*grayscale*/
+  --white: #ffffff;
+  --gray100: #f4f4f7;
+  --gray200: #e5e5eb;
+  --gray300: #cfcfd8;
+  --gray400: #adadba;
+  --gray500: #9696a2;
+  --gray600: #7b7b88;
+  --black: #101010;
+
+  /*cube*/
+  --cube-white: #ffffff;
+  --cube-yellow: #f9f002;
+  --cube-green: #50e200;
+  --cube-red: #9b0300;
+  --cube-orange: #f39401;
+  --cube-blue: #063ec3;
+}
+
+body {
+  background-color: #f4f4f7;
 }

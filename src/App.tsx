@@ -11,6 +11,7 @@ import { usePopupStore } from "./store/usePopupStore";
 import CubeSelector from "./components/cubeSelector/cubeSelector";
 import TempFunctions from "./components/tempFunctions/tempFunctions";
 import { useLoading } from "./hooks/useLoading";
+import "pretendard/dist/web/static/pretendard.css"
 
 function App() {
   const { scramble, setNewScramble, nowCubeType, changeCubeType, cubeList } =
@@ -73,7 +74,7 @@ function App() {
 
   return (
     <>
-      <div className="flex flex-col w-full items-center">
+      <div className="flex flex-col w-full items-center font-[Pretendard]">
         <CubeSelector
           nowCubeType={nowCubeType}
           cubeList={cubeList}

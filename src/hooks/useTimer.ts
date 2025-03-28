@@ -7,15 +7,37 @@ export function useTimer() {
   const [timeStr, setTimeStr] = useState("0.000");
   const [record, setRecord] = useState(0);
   const [isRunning, setIsRunning] = useState(false);
+  const [penaltyWithInspection, setPenaltyWithInspection] = useState<
+    "" | "+2" | "DNF"
+  >("");
   // const [isStopped, setIsStopped] = useState(false);
   const isRunningRef = useRef(false);
   const isStoppedRef = useRef(false);
+  const isInspectionMode = useRef(false);
+  const inspectionTimerRef = useRef<NodeJS.Timeout | null>(null);
 
   function update() {
     const currentTime = performance.now() - startTimeRef.current;
     setTimeStr(time2Str(currentTime));
     setRecord(currentTime);
     timerRef.current = requestAnimationFrame(update);
+  }
+
+  function updateInspection() {
+    let inspectionTime = 0;
+    setTimeStr(inspectionTime.toString());
+    inspectionTimerRef.current = setInterval(() => {
+      inspectionTime += 1;
+      setTimeStr(inspectionTime.toString());
+      if (inspectionTime >= 17) {
+        setPenaltyWithInspection("DNF");
+        setTimeStr("DNF");
+        clearInterval(inspectionTimerRef.current!);
+      } else if (inspectionTime >= 15) {
+        setPenaltyWithInspection("+2");
+        setTimeStr("+2");
+      }
+    }, 1000);
   }
 
   function time2Str(time: number) {
@@ -28,15 +50,31 @@ export function useTimer() {
     }.${String(milliseconds).padStart(3, "0")}`;
   }
 
-  function startTimer() {
+  function startTimer(isInspectionActive: boolean) {
     // console.log(isRunning, isStopped);
     if (!isRunningRef.current && !isStoppedRef.current) {
-      startTimeRef.current = performance.now();
-      update();
-      setIsRunning(true);
-      isRunningRef.current = true;
+      console.log(isInspectionActive, isInspectionMode.current);
+      if (isInspectionActive && !isInspectionMode.current) {
+        startInspection();
+      } else {
+        endInspection();
+        startTimeRef.current = performance.now();
+        update();
+        setIsRunning(true);
+        isRunningRef.current = true;
+      }
     }
     isStoppedRef.current = false;
+  }
+
+  function startInspection() {
+    isInspectionMode.current = true;
+    updateInspection();
+  }
+
+  function endInspection() {
+    if (inspectionTimerRef.current) clearInterval(inspectionTimerRef.current!);
+    isInspectionMode.current = false;
   }
 
   function stopTiemr() {
@@ -48,5 +86,12 @@ export function useTimer() {
     }
   }
 
-  return { timeStr, record, startTimer, stopTiemr, isRunning };
+  return {
+    timeStr,
+    record,
+    startTimer,
+    stopTiemr,
+    isRunning,
+    penaltyWithInspection,
+  };
 }

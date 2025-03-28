@@ -1,13 +1,13 @@
 import { useRef, useEffect, useState } from "react";
 import RecordItem from "./subs/recordItem";
 import { SolvedRecord } from "../../util/record.util";
+import { useLocalStorage } from "usehooks-ts";
 // import { useElementMover } from "../../hooks/useElementMover";
 // import { ResizingPart } from "../../hooks/useElementMover";
 // import {
 //   subscribeCustomEvent,
 //   unsubscribeCustomEvent,
 // } from "../../util/customEvent";
-import { useViewersHandlingStore } from "../../store/useViewersHandleStore";
 import SessionSelector from "../sessionSelector/sessionSelector";
 
 interface RecordListProps {
@@ -33,7 +33,10 @@ function RecordList(props: RecordListProps) {
     deleteSession,
   } = props;
 
-  
+  const [isRecordListOpen] = useLocalStorage(
+    "isRecordListOpen",
+    true
+  );
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
   const [hasScroll, setHasScroll] = useState(false);
@@ -53,15 +56,16 @@ function RecordList(props: RecordListProps) {
   //   { width: 300, height: 500 },
   //   "record-list"
   // );
-  const isOpenedRecordList = useViewersHandlingStore(
-    (state) => state.isOpenedRecordList
-  );
+
+  // const isOpenedRecordList = useViewersHandlingStore(
+  //   (state) => state.isOpenedRecordList
+  // );
 
   function calcAllRecordAvg() {
     let dnfCnt = 0;
     const sum = recordList
       .map((item) => {
-        if (item.penalty === "+2") return item.record + 2;
+        if (item.penalty === "+2") return item.record + 2000;
         else if (item.penalty === "DNF") {
           dnfCnt += 1;
           return 0;
@@ -117,7 +121,7 @@ function RecordList(props: RecordListProps) {
         // onMouseUp={endMove}
         // onMouseLeave={endMove}
         className={`container w-[300px] h-[450px] bg-[#F4F4F7] rounded-md p-[15px] absolute top-[calc(100vh-500px)] left-[0] ${
-          isOpenedRecordList ? "block" : "hidden"
+          isRecordListOpen ? "block" : "hidden"
         }`}
       >
         <SessionSelector

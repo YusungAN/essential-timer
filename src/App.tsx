@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useScramble } from "./hooks/useScramble";
 import { useTimer } from "./hooks/useTimer";
 import { useRecords } from "./hooks/useRecords";
@@ -11,12 +11,21 @@ import { usePopupStore } from "./store/usePopupStore";
 import CubeSelector from "./components/cubeSelector/cubeSelector";
 import { useLoading } from "./hooks/useLoading";
 import LoginButton from "./components/LoginButton/loginButton";
+import SettingPopup from "./components/settingPopup/settingPopup";
+import { useLocalStorage } from "usehooks-ts";
 import "pretendard/dist/web/static/pretendard.css";
 
 function App() {
   const { scramble, setNewScramble, nowCubeType, changeCubeType, cubeList } =
     useScramble();
-  const { timeStr, record, startTimer, stopTiemr, isRunning } = useTimer();
+  const {
+    timeStr,
+    record,
+    startTimer,
+    stopTiemr,
+    isRunning,
+    penaltyWithInspection,
+  } = useTimer();
   const {
     recordList,
     addRecord,
@@ -31,13 +40,15 @@ function App() {
 
   const [isSpaceDowned, setIsSpaceDowned] = useState(false);
   const [isScrambleLoading, handleSetNewScr] = useLoading(setNewScramble);
+  const [isInspectionActive] = useLocalStorage("isInspectionActive", false);
+  const isInspectionActiveRef = useRef(false);
 
   const updateLoginInfo = useLoginInfo((state) => state.updateLoginInfo);
 
   function handleStartTimer(e: KeyboardEvent) {
     if (e.key === " " && !usePopupStore.getState().isOpen) {
       setIsSpaceDowned(false);
-      startTimer();
+      startTimer(isInspectionActiveRef.current);
     }
   }
 
@@ -66,8 +77,12 @@ function App() {
   }, []);
 
   useEffect(() => {
+    isInspectionActiveRef.current = isInspectionActive;
+  }, [isInspectionActive]);
+
+  useEffect(() => {
     if (!isRunning) {
-      if (record !== 0) addRecord(scramble, record, "");
+      if (record !== 0) addRecord(scramble, record, penaltyWithInspection);
       handleSetNewScr(nowCubeType);
     }
   }, [isRunning, nowCubeType]);
@@ -118,8 +133,8 @@ function App() {
           isLoading={isScrambleLoading}
         />
       </div>
-      {/* </div> */}
       <Popup />
+      <SettingPopup />
     </>
   );
 }

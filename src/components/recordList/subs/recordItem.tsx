@@ -28,14 +28,14 @@ function RecordItem(props: RecordItemProps) {
 
   const ao5 = useMemo(() => {
     return calculateAvg5(lastRecords.slice(-5));
-  }, [index, lastRecords]);
+  }, [index, lastRecords, record.penalty]);
   const ao12 = useMemo(() => {
     return calculateAvg12(lastRecords);
-  }, [index, lastRecords]);
+  }, [index, lastRecords, record.penalty]);
 
   const openPopUp = usePopupStore((state) => state.openPopUp);
 
-  function time2Str(time: number) {
+  function time2Str(time: number, dismissPenalty: boolean) {
     const minutes = Math.floor(time / 60000);
     const seconds = Math.floor((time % 60000) / 1000);
     const milliseconds = Math.floor(time % 1000);
@@ -43,37 +43,39 @@ function RecordItem(props: RecordItemProps) {
     return `${minutes > 0 ? minutes : ""}${minutes > 0 ? ":" : ""}${
       minutes > 0 ? String(seconds).padStart(2, "0") : seconds
     }.${String(milliseconds).padStart(3, "0")}${
-      record.penalty === "+2" ? "+" : ""
+      !dismissPenalty && record.penalty === "+2" ? "+" : ""
     }`;
   }
 
   function calculateAvg5(recordList: SolvedRecord[]) {
     // 이 함수를 상위 컴포넌트로 옮길까
-    console.log("fuck");
     if (recordList.length !== 5) return 0;
     const tempArr = recordList
       .slice()
       .map((item) =>
         item.penalty === "+2"
-          ? item.record + 2
+          ? item.record + 2000
           : item.penalty === "DNF"
           ? Infinity
           : item.record
       );
+
     tempArr.sort((a, b) => a - b);
+    console.log(index, recordList, tempArr);
 
     const result = (tempArr[1] + tempArr[2] + tempArr[3]) / 3;
 
     return result === Infinity ? "DNF" : result;
   }
 
-  function calculateAvg12(recordList: SolvedRecord[]) { // statViewer에 있는게 틀림. 여기가 맞음
+  function calculateAvg12(recordList: SolvedRecord[]) {
+    // statViewer에 있는게 틀림. 여기가 맞음
     if (recordList.length !== 12) return 0;
     const tempArr = recordList
       .slice()
       .map((item) =>
         item.penalty === "+2"
-          ? item.record + 2
+          ? item.record + 2000
           : item.penalty === "DNF"
           ? Infinity
           : item.record
@@ -108,13 +110,15 @@ function RecordItem(props: RecordItemProps) {
       <div className="flex items-center">
         <div className="text-gray-400 mr-[5px] text-sm">{index + 1}</div>
         <div
-          className={`text-lg ${isLast ? "text-(--black)" : "text-gray-500"} cursor-pointer`}
+          className={`text-lg ${
+            isLast ? "text-(--black)" : "text-gray-500"
+          } cursor-pointer`}
           onClick={() => setIsModifiable(!isModifableMode)}
         >
           {record.penalty === "DNF"
             ? "DNF"
             : time2Str(
-                record.penalty === "+2" ? record.record + 2000 : record.record
+                record.penalty === "+2" ? record.record + 2000 : record.record, false
               )}
         </div>
       </div>
@@ -125,13 +129,13 @@ function RecordItem(props: RecordItemProps) {
           }`}
         >
           <div className="w-[33%] text-center">
-            {ao5 !== 0 ? (ao5 !== "DNF" ? time2Str(ao5) : "DNF") : "-"}
+            {ao5 !== 0 ? (ao5 !== "DNF" ? time2Str(ao5, true) : "DNF") : "-"}
           </div>
           <div className="w-[33%] text-center">
-            {ao12 !== 0 ? (ao12 !== "DNF" ? time2Str(ao12) : "DNF") : "-"}
+            {ao12 !== 0 ? (ao12 !== "DNF" ? time2Str(ao12, true) : "DNF") : "-"}
           </div>
           <div className="w-[33%] text-center">
-            {allAvg !== 0 ? (allAvg !== "DNF" ? time2Str(allAvg) : "DNF") : ""}
+            {allAvg !== 0 ? (allAvg !== "DNF" ? time2Str(allAvg, true) : "DNF") : ""}
           </div>
         </div>
       ) : (

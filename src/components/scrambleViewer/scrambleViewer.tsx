@@ -4,13 +4,13 @@ import CubeFace from "./subs/cubeFace";
 import { CubeState } from "./genNxNxNScrambleState";
 import Square1Face from "./subs/square1Face";
 import Square1Slice from "./subs/square1Slice";
+import { useLocalStorage } from "usehooks-ts";
 // import { useElementMover } from "../../hooks/useElementMover";
 // import { ResizingPart } from "../../hooks/useElementMover";
 // import {
 //   subscribeCustomEvent,
 //   unsubscribeCustomEvent,
 // } from "../../util/customEvent";
-import { useViewersHandlingStore } from "../../store/useViewersHandleStore";
 import { Square1State } from "./genSquare1ScrambleState";
 
 function ScrambleViewer(props: {
@@ -19,6 +19,10 @@ function ScrambleViewer(props: {
   isLoading: boolean;
 }) {
   const { scramble, cubeType, isLoading } = props;
+  const [isScrambleViewOpen] = useLocalStorage(
+    "isScrambleViewOpen",
+    true
+  );
 
   const [cube, setCube] = useState<CubeState | Square1State>({
     U: Array(3)
@@ -41,30 +45,6 @@ function ScrambleViewer(props: {
       .map(() => Array(3).fill("L")),
   });
 
-  // const [square1, setSquare1] = useState<Square1State>({
-  //   slice: false,
-  //   top: [
-  //     new SquarePiece("U", 1, ["F"]),
-  //     new SquarePiece("U", 2, ["F", "R"]),
-  //     new SquarePiece("U", 1, ["R"]),
-  //     new SquarePiece("U", 2, ["R", "B"]),
-  //     new SquarePiece("U", 1, ["B"]),
-  //     new SquarePiece("U", 2, ["B", "L"]),
-  //     new SquarePiece("U", 1, ["L"]),
-  //     new SquarePiece("U", 2, ["L", "F"]),
-  //   ],
-  //   down: [
-  //     new SquarePiece("D", 1, ["F"]),
-  //     new SquarePiece("D", 2, ["F", "R"]),
-  //     new SquarePiece("D", 1, ["R"]),
-  //     new SquarePiece("D", 2, ["R", "B"]),
-  //     new SquarePiece("D", 1, ["B"]),
-  //     new SquarePiece("D", 2, ["B", "L"]),
-  //     new SquarePiece("D", 1, ["L"]),
-  //     new SquarePiece("D", 2, ["L", "F"]),
-  //   ],
-  // });
-
   const { getScrambleCubeState } = useScramble();
   // const {
   //   isCliking,
@@ -81,9 +61,10 @@ function ScrambleViewer(props: {
   //   { width: 400, height: 350 },
   //   "sc-viewer"
   // );
-  const isOpenedScrambleViewer = useViewersHandlingStore(
-    (state) => state.isOpenedScrambleViewer
-  );
+
+  // const isOpenedScrambleViewer = useViewersHandlingStore(
+  //   (state) => state.isOpenedScrambleViewer
+  // );
 
   // function showResizecursor(resizeType: ResizingPart) {
   //   if (resizeType === ResizingPart.BOT_RIGHT) return "cursor-nwse-resize";
@@ -127,7 +108,7 @@ function ScrambleViewer(props: {
         // onMouseUp={endMove}
         // onMouseLeave={endMove}
         className={`bg-[#F4F4F7] rounded-md p-[10px] ${
-          isOpenedScrambleViewer ? "flex" : "hidden"
+          isScrambleViewOpen ? "flex" : "hidden"
         } w-[400px] h-[350px] justify-content items-center absolute top-[calc(100vh-350px)] right-[0]`}
       >
         {isLoading ? (

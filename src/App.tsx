@@ -80,9 +80,15 @@ function App() {
     isInspectionActiveRef.current = isInspectionActive;
   }, [isInspectionActive]);
 
+
   useEffect(() => {
     if (!isRunning) {
       if (record !== 0) addRecord(scramble, record, penaltyWithInspection);
+    }
+  }, [isRunning]);
+
+  useEffect(() => {
+    if (!isRunning) {
       handleSetNewScr(nowCubeType);
     }
   }, [isRunning, nowCubeType]);

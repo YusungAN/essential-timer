@@ -18,7 +18,7 @@ function SessionItem(props: SessionItemProps) {
 
   return (
     <div
-      className="group w-full pb-[5px] pt-[5px] pl-[10px] pr-[10px] hover:bg-[#CFCFD8] flex justify-between items-center"
+      className="group w-full pb-[5px] pt-[5px] pl-[10px] pr-[10px] hover:bg-[#CFCFD8] flex justify-between items-center cursor-pointer"
       onClick={() => onSessionChange(sessionName)}
       onMouseDown={(e) => e.stopPropagation()}
     >

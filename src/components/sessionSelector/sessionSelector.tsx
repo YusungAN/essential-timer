@@ -53,7 +53,7 @@ function SessionSelector(props: SessionSelectorProps) {
   return (
     <>
       <div
-        className="bg-[#CFCFD8] rounded-md pb-[5px] pt-[5px] pl-[10px] pr-[10px] flex justify-between items-center"
+        className="bg-[#CFCFD8] rounded-md pb-[5px] pt-[5px] pl-[10px] pr-[10px] flex justify-between items-center cursor-pointer"
         onClick={() => setIsOpen(!isOoen)}
         onMouseDown={(e) => e.stopPropagation()}
       >

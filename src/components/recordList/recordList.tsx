@@ -32,6 +32,8 @@ function RecordList(props: RecordListProps) {
     addSession,
     deleteSession,
   } = props;
+
+  
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
   const [hasScroll, setHasScroll] = useState(false);

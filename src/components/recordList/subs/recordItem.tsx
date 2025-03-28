@@ -28,10 +28,10 @@ function RecordItem(props: RecordItemProps) {
 
   const ao5 = useMemo(() => {
     return calculateAvg5(lastRecords.slice(-5));
-  }, [index, record.record]);
+  }, [index, lastRecords]);
   const ao12 = useMemo(() => {
     return calculateAvg12(lastRecords);
-  }, [index, record.record]);
+  }, [index, lastRecords]);
 
   const openPopUp = usePopupStore((state) => state.openPopUp);
 
@@ -108,7 +108,7 @@ function RecordItem(props: RecordItemProps) {
       <div className="flex items-center">
         <div className="text-gray-400 mr-[5px] text-sm">{index + 1}</div>
         <div
-          className={`text-lg ${isLast ? "text-(--black)" : "text-gray-500"}`}
+          className={`text-lg ${isLast ? "text-(--black)" : "text-gray-500"} cursor-pointer`}
           onClick={() => setIsModifiable(!isModifableMode)}
         >
           {record.penalty === "DNF"
@@ -125,17 +125,17 @@ function RecordItem(props: RecordItemProps) {
           }`}
         >
           <div className="w-[33%] text-center">
-            {ao5 !== 0 ? (ao5 !== "DNF" ? time2Str(ao5) : "DNF") : ""}
+            {ao5 !== 0 ? (ao5 !== "DNF" ? time2Str(ao5) : "DNF") : "-"}
           </div>
           <div className="w-[33%] text-center">
-            {ao12 !== 0 ? (ao12 !== "DNF" ? time2Str(ao12) : "DNF") : ""}
+            {ao12 !== 0 ? (ao12 !== "DNF" ? time2Str(ao12) : "DNF") : "-"}
           </div>
           <div className="w-[33%] text-center">
             {allAvg !== 0 ? (allAvg !== "DNF" ? time2Str(allAvg) : "DNF") : ""}
           </div>
         </div>
       ) : (
-        <div className="flex w-[30%] max-w-[100px] justify-between items-center text-sm min-w-[100px]">
+        <div className="flex w-[30%] max-w-[100px] justify-between items-center text-sm min-w-[100px] cursor-pointer">
           <div
             onClick={(e) => handleChangePenalty(e, "+2")}
             onMouseDown={(e) => e.stopPropagation()}

@@ -52,7 +52,7 @@ function Popup() {
 
   return (
     <div
-      className={`fixed top-0 left-0 w-[100dvw] h-[100dvh] bg-[rgba(0,0,0,0.4)] ${
+      className={`fixed z-100 top-0 left-0 w-[100dvw] h-[100dvh] bg-[rgba(0,0,0,0.4)] ${
         isOpen ? "flex" : "hidden"
       } justify-center items-center`}
       onClick={closePopUp}

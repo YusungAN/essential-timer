@@ -9,9 +9,9 @@ import supabase from "./supabase";
 import { useLoginInfo } from "./store/useLoginStore";
 import { usePopupStore } from "./store/usePopupStore";
 import CubeSelector from "./components/cubeSelector/cubeSelector";
-import TempFunctions from "./components/tempFunctions/tempFunctions";
 import { useLoading } from "./hooks/useLoading";
-import "pretendard/dist/web/static/pretendard.css"
+import LoginButton from "./components/LoginButton/loginButton";
+import "pretendard/dist/web/static/pretendard.css";
 
 function App() {
   const { scramble, setNewScramble, nowCubeType, changeCubeType, cubeList } =
@@ -74,13 +74,20 @@ function App() {
 
   return (
     <>
+      <LoginButton />
       <div className="flex flex-col w-full items-center font-[Pretendard]">
         <CubeSelector
           nowCubeType={nowCubeType}
           cubeList={cubeList}
           onSelect={changeCubeType}
         />
-        <div className="w-full text-center pl-[5vw] pr-[5vw] pt-[2vh] pb-[2vh] text-3xl">
+        <div
+          className={`w-full text-center pl-[5vw] pr-[5vw] pt-[2vh] pb-[2vh] text-gray-500 ${
+            nowCubeType === "6x6x6" || nowCubeType === "7x7x7"
+              ? "lg:text-2xl md:text-xl sm:text-lg"
+              : "lg:text-4xl md:text-2xl sm:text-xl"
+          }`}
+        >
           {isScrambleLoading ? "Loading..." : scramble}
         </div>
         {/* <div className="flex justify-between w-full"> */}
@@ -97,15 +104,19 @@ function App() {
         <div>
           {/* timer section */}
           <div
-            className={`w-full text-center pt-[20vh] pb-[5vh] text-9xl tabular-nums ${
+            className={`w-full text-center pt-[10vh] pb-[5vh] text-9xl tabular-nums ${
               isSpaceDowned ? "text-[#F58432]" : "text-black"
             }`}
           >
             {timeStr}
           </div>
-          <TempFunctions recordList={recordList} />
+          {/* <TempFunctions recordList={recordList} /> */}
         </div>
-        <ScrambleViewer scramble={scramble} cubeType={nowCubeType} isLoading={isScrambleLoading} />
+        <ScrambleViewer
+          scramble={scramble}
+          cubeType={nowCubeType}
+          isLoading={isScrambleLoading}
+        />
       </div>
       {/* </div> */}
       <Popup />

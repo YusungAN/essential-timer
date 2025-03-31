@@ -13,6 +13,7 @@ import { useLoading } from "./hooks/useLoading";
 import LoginButton from "./components/LoginButton/loginButton";
 import SettingPopup from "./components/settingPopup/settingPopup";
 import { useLocalStorage } from "usehooks-ts";
+import { time2Str } from "./util/record.util";
 import "pretendard/dist/web/static/pretendard.css";
 
 function App() {
@@ -21,6 +22,7 @@ function App() {
   const {
     timeStr,
     record,
+    firstStopeedRecord,
     startTimer,
     stopTiemr,
     isRunning,
@@ -42,13 +44,15 @@ function App() {
   const [isScrambleLoading, handleSetNewScr] = useLoading(setNewScramble);
   const [isInspectionActive] = useLocalStorage("isInspectionActive", false);
   const isInspectionActiveRef = useRef(false);
+  const [isBLDPartTimeActive] = useLocalStorage("isBLDPartTimeActive", false);
+  const isBLDPartTimeActiveRef = useRef(false);
 
   const updateLoginInfo = useLoginInfo((state) => state.updateLoginInfo);
 
   function handleStartTimer(e: KeyboardEvent) {
     if (e.key === " " && !usePopupStore.getState().isOpen) {
       setIsSpaceDowned(false);
-      startTimer(isInspectionActiveRef.current);
+      startTimer(isInspectionActiveRef.current, isBLDPartTimeActiveRef.current);
     }
   }
 
@@ -80,10 +84,14 @@ function App() {
     isInspectionActiveRef.current = isInspectionActive;
   }, [isInspectionActive]);
 
+  useEffect(() => {
+    isBLDPartTimeActiveRef.current = isBLDPartTimeActive;
+  }, [isBLDPartTimeActive]);
 
   useEffect(() => {
     if (!isRunning) {
-      if (record !== 0) addRecord(scramble, record, penaltyWithInspection);
+      if (record !== 0)
+        addRecord(scramble, record, firstStopeedRecord, penaltyWithInspection);
     }
   }, [isRunning]);
 
@@ -130,6 +138,9 @@ function App() {
             }`}
           >
             {timeStr}
+          </div>
+          <div className="w-full text-center text-4xl">
+            {firstStopeedRecord !== 0 ? time2Str(firstStopeedRecord) : ""}
           </div>
           {/* <TempFunctions recordList={recordList} /> */}
         </div>

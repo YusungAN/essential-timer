@@ -241,17 +241,17 @@ export function genNxNxNScrambleState(scramble: string, n: number): CubeState {
         }
         if (modifier === "'") {
           for (let i = 0; i < n; i++) {
-            cube.U[t][i] = cube.L[n-1-i][t];
-            cube.L[n-1-i][t] = cube.D[n - 1 - t][n-1-i];
-            cube.D[n - 1 - t][n-1-i] = cube.R[i][n - 1 - t];
+            cube.U[t][i] = cube.L[n - 1 - i][t];
+            cube.L[n - 1 - i][t] = cube.D[n - 1 - t][n - 1 - i];
+            cube.D[n - 1 - t][n - 1 - i] = cube.R[i][n - 1 - t];
             cube.R[i][n - 1 - t] = temp[i];
           }
         } else {
           for (let i = 0; i < n; i++) {
             cube.U[t][i] = cube.R[i][n - 1 - t];
-            cube.R[i][n - 1 - t] = cube.D[n - 1 - t][n-1-i];
-            cube.D[n - 1 - t][n-1-i] = cube.L[n-1-i][t];
-            cube.L[n-1-i][t] = temp[i];
+            cube.R[i][n - 1 - t] = cube.D[n - 1 - t][n - 1 - i];
+            cube.D[n - 1 - t][n - 1 - i] = cube.L[n - 1 - i][t];
+            cube.L[n - 1 - i][t] = temp[i];
           }
         }
         if (modifier === "2") {
@@ -260,9 +260,9 @@ export function genNxNxNScrambleState(scramble: string, n: number): CubeState {
           }
           for (let i = 0; i < n; i++) {
             cube.U[t][i] = cube.R[i][n - 1 - t];
-            cube.R[i][n - 1 - t] = cube.D[n - 1 - t][n-1-i];
-            cube.D[n - 1 - t][n-1-i] = cube.L[n-1-i][t];
-            cube.L[n-1-i][t] = temp[i];
+            cube.R[i][n - 1 - t] = cube.D[n - 1 - t][n - 1 - i];
+            cube.D[n - 1 - t][n - 1 - i] = cube.L[n - 1 - i][t];
+            cube.L[n - 1 - i][t] = temp[i];
           }
         }
       }
@@ -281,6 +281,14 @@ export function genNxNxNScrambleState(scramble: string, n: number): CubeState {
         rotate(cube.U);
         rotate(cube.U);
       }
+      if (n === thickness) {
+        if (modifier === "") rotateR(cube.D);
+        else if (modifier === "'") rotate(cube.D);
+        else {
+          rotate(cube.D);
+          rotate(cube.D);
+        }
+      }
     } else if (face === "R") {
       if (modifier === "") rotate(cube.R);
       else if (modifier === "'") rotateR(cube.R);
@@ -288,12 +296,28 @@ export function genNxNxNScrambleState(scramble: string, n: number): CubeState {
         rotate(cube.R);
         rotate(cube.R);
       }
+      if (n === thickness) {
+        if (modifier === "") rotateR(cube.L);
+        else if (modifier === "'") rotate(cube.L);
+        else {
+          rotate(cube.L);
+          rotate(cube.L);
+        }
+      }
     } else if (face === "F") {
       if (modifier === "") rotate(cube.F);
       else if (modifier === "'") rotateR(cube.F);
       else {
         rotate(cube.F);
         rotate(cube.F);
+      }
+      if (n === thickness) {
+        if (modifier === "") rotateR(cube.B);
+        else if (modifier === "'") rotate(cube.B);
+        else {
+          rotate(cube.B);
+          rotate(cube.B);
+        }
       }
     } else if (face === "D") {
       if (modifier === "") rotate(cube.D);
@@ -321,13 +345,23 @@ export function genNxNxNScrambleState(scramble: string, n: number): CubeState {
   }
 
   scramble.split(" ").forEach((element) => {
-    const face = element[0] === "3" ? element[1] : element[0];
+    let face = element[0] === "3" ? element[1] : element[0];
     let modifier = element.includes("'")
       ? "'"
       : element.includes("2")
       ? "2"
       : "";
     let thickness = element[0] === "3" ? 3 : element.includes("w") ? 2 : 1;
+    if (face === "x") {
+      face = "R";
+      thickness = n;
+    } else if (face === "y") {
+      face = "U";
+      thickness = n;
+    } else if (face === "z") {
+      face = "F";
+      thickness = n;
+    }
     executeRotate(
       face as "U" | "R" | "D" | "F" | "R" | "L",
       modifier as "" | "'" | "2",

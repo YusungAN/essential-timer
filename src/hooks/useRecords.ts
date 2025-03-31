@@ -50,10 +50,12 @@ export function useRecords() {
   async function addRecord(
     scramble: string,
     record: number,
+    firstStopeedRecord: number,
     penalty: "" | "+2" | "DNF"
   ) {
     const newRecord = {
       record: record,
+      part_record: firstStopeedRecord,
       scramble: scramble,
       penalty: penalty,
       timestamp: Date.now(),

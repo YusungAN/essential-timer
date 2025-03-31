@@ -19,6 +19,7 @@ function SettingPopup() {
     "isScrambleViewOpen",
     true
   );
+  const [isBLDPartTimeActive, setIsBLDPartTimeActive] = useLocalStorage("isBLDPartTimeActive", false);
 
   return (
     <>
@@ -51,7 +52,7 @@ function SettingPopup() {
               />
             </div>
           </div>
-          <div className="flex justify-between">
+          <div className="flex justify-between mb-[5px]">
             <div>스크램블 뷰어 열기</div>
             <Toggle
               className="scale-75"
@@ -63,7 +64,7 @@ function SettingPopup() {
             />
           </div>
           <div className="text-xl mt-[20px] font-bold mb-[20px]">타이머 설정</div>
-          <div className="flex justify-between">
+          <div className="flex justify-between mb-[5px]">
             <div>15초 미리보기 켜기</div>
             <Toggle
               className="scale-75"
@@ -71,6 +72,17 @@ function SettingPopup() {
               defaultChecked={isInspectionActive}
               onChange={(e: ChangeEvent<HTMLInputElement>) =>
                 setIsInspectionAcive(e.target.checked)
+              }
+            />
+          </div>
+          <div className="flex justify-between mb-[5px]">
+            <div>구간 기록 활성화(블라인드 암기 시간 측정)</div>
+            <Toggle
+              className="scale-75"
+              icons={false}
+              defaultChecked={isBLDPartTimeActive}
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setIsBLDPartTimeActive(e.target.checked)
               }
             />
           </div>

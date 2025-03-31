@@ -14,7 +14,9 @@ export function useTimer() {
   const isRunningRef = useRef(false);
   const isStoppedRef = useRef(false);
   const isInspectionMode = useRef(false);
+  const shouldRecordFirstStop = useRef(false);
   const inspectionTimerRef = useRef<NodeJS.Timeout | null>(null);
+  const [firstStopeedRecord, setFirstStoppedRecord] = useState(0);
 
   function update() {
     const currentTime = performance.now() - startTimeRef.current;
@@ -50,14 +52,19 @@ export function useTimer() {
     }.${String(milliseconds).padStart(3, "0")}`;
   }
 
-  function startTimer(isInspectionActive: boolean) {
+  function startTimer(
+    isInspectionActive: boolean,
+    isBLDPartTimeActive: boolean
+  ) {
     // console.log(isRunning, isStopped);
     if (!isRunningRef.current && !isStoppedRef.current) {
-      console.log(isInspectionActive, isInspectionMode.current);
+      // console.log(isInspectionActive, isInspectionMode.current);
+      setFirstStoppedRecord(0);
       if (isInspectionActive && !isInspectionMode.current) {
         startInspection();
       } else {
         endInspection();
+        if (isBLDPartTimeActive) shouldRecordFirstStop.current = true;
         startTimeRef.current = performance.now();
         update();
         setIsRunning(true);
@@ -79,16 +86,22 @@ export function useTimer() {
 
   function stopTiemr() {
     if (isRunningRef.current) {
-      cancelAnimationFrame(timerRef.current);
-      setIsRunning(false);
-      isRunningRef.current = false;
-      isStoppedRef.current = true;
+      if (shouldRecordFirstStop.current) {
+        setFirstStoppedRecord(performance.now() - startTimeRef.current);
+        shouldRecordFirstStop.current = false;
+      } else {
+        cancelAnimationFrame(timerRef.current);
+        setIsRunning(false);
+        isRunningRef.current = false;
+        isStoppedRef.current = true;
+      }
     }
   }
 
   return {
     timeStr,
     record,
+    firstStopeedRecord,
     startTimer,
     stopTiemr,
     isRunning,

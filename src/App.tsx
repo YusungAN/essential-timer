@@ -15,6 +15,7 @@ import SettingPopup from "./components/settingPopup/settingPopup";
 import { useLocalStorage } from "usehooks-ts";
 import { time2Str } from "./util/record.util";
 import "pretendard/dist/web/static/pretendard.css";
+import SharePopup from "./components/recordList/subs/sharePopup";
 
 function App() {
   const { scramble, setNewScramble, nowCubeType, changeCubeType, cubeList } =
@@ -152,6 +153,7 @@ function App() {
       </div>
       <Popup />
       <SettingPopup />
+      <SharePopup />
     </>
   );
 }

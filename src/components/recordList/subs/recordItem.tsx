@@ -9,6 +9,7 @@ interface RecordItemProps {
   lastRecords: SolvedRecord[];
   isLast: Boolean;
   allAvg: number | "DNF";
+  allRecords: SolvedRecord[];
   onDelete: () => void;
   changePenalty: (penalty: "" | "+2" | "DNF") => void;
 }
@@ -21,6 +22,7 @@ function RecordItem(props: RecordItemProps) {
     lastRecords,
     isLast,
     allAvg,
+    allRecords,
     onDelete,
     changePenalty,
   } = props;
@@ -34,6 +36,9 @@ function RecordItem(props: RecordItemProps) {
   }, [index, lastRecords, record.penalty]);
 
   const openPopUp = usePopupStore((state) => state.openPopUp);
+  const openRecordShareTap = usePopupStore(
+    (state) => state.openRecordSharePopUp
+  );
 
   function time2Str(time: number, dismissPenalty: boolean) {
     const minutes = Math.floor(time / 60000);
@@ -61,7 +66,7 @@ function RecordItem(props: RecordItemProps) {
       );
 
     tempArr.sort((a, b) => a - b);
-    console.log(index, recordList, tempArr);
+    // console.log(index, recordList, tempArr);
 
     const result = (tempArr[1] + tempArr[2] + tempArr[3]) / 3;
 
@@ -105,22 +110,32 @@ function RecordItem(props: RecordItemProps) {
     });
   }
 
+  function handleOpenRecordShareTap(
+    avg: number | "DNF",
+    recordList: SolvedRecord[]
+  ) {
+    if (avg === 0) return;
+    openRecordShareTap(avg === "DNF" ? "DNF" : time2Str(avg, true), recordList);
+  }
+
   return (
     <div className="flex w-full rounded-md p-[5px] mb-[3px] mt-[3px] justify-between items-center">
       <div className="flex items-center">
         <div className="text-gray-400 mr-[5px] text-sm">{index + 1}</div>
-        <div
+        <abbr
+          title={!isModifableMode ? "기록에 패널티 추가하기" : "평균 보기"}
           className={`text-lg ${
             isLast ? "text-(--black)" : "text-gray-500"
-          } cursor-pointer`}
+          } cursor-pointer no-underline`}
           onClick={() => setIsModifiable(!isModifableMode)}
         >
           {record.penalty === "DNF"
             ? "DNF"
             : time2Str(
-                record.penalty === "+2" ? record.record + 2000 : record.record, false
+                record.penalty === "+2" ? record.record + 2000 : record.record,
+                false
               )}
-        </div>
+        </abbr>
       </div>
       {!isModifableMode ? (
         <div
@@ -128,15 +143,31 @@ function RecordItem(props: RecordItemProps) {
             isLast ? "text-(--black)" : "text-gray-500"
           }`}
         >
-          <div className="w-[33%] text-center">
+          <abbr
+            title="기록 공유하기"
+            className="w-[33%] text-center cursor-pointer no-underline"
+            onClick={() => handleOpenRecordShareTap(ao5, lastRecords.slice(-5))}
+          >
             {ao5 !== 0 ? (ao5 !== "DNF" ? time2Str(ao5, true) : "DNF") : "-"}
-          </div>
-          <div className="w-[33%] text-center">
+          </abbr>
+          <abbr
+            title="기록 공유하기"
+            className="w-[33%] text-center cursor-pointer no-underline"
+            onClick={() => handleOpenRecordShareTap(ao5, lastRecords)}
+          >
             {ao12 !== 0 ? (ao12 !== "DNF" ? time2Str(ao12, true) : "DNF") : "-"}
-          </div>
-          <div className="w-[33%] text-center">
-            {allAvg !== 0 ? (allAvg !== "DNF" ? time2Str(allAvg, true) : "DNF") : ""}
-          </div>
+          </abbr>
+          <abbr
+            title="기록 공유하기"
+            className="w-[33%] text-center cursor-pointer no-underline"
+            onClick={() => handleOpenRecordShareTap(allAvg, allRecords)}
+          >
+            {allAvg !== 0
+              ? allAvg !== "DNF"
+                ? time2Str(allAvg, true)
+                : "DNF"
+              : ""}
+          </abbr>
         </div>
       ) : (
         <div className="flex w-[30%] max-w-[100px] justify-between items-center text-sm min-w-[100px] cursor-pointer">

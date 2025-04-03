@@ -15,6 +15,7 @@ function Popup() {
 
   const onYesRef = useRef(() => {});
   const onNoRef = useRef(() => {});
+  const inputRef = useRef<HTMLInputElement|null>(null);
 
   const isOpen = usePopupStore((state) => state.isOpen);
   const closePopUp = usePopupStore((state) => state.closePopUp);
@@ -46,9 +47,20 @@ function Popup() {
   }
 
   useEffect(() => {
+    
+    if (inputRef.current) {
+      inputRef.current.select();
+      console.log('asdf');
+    }
     window.addEventListener("open-popup", initDataForOpenPopUp);
     return () => window.removeEventListener("open-popup", initDataForOpenPopUp);
   }, []);
+
+  useEffect(() => {
+    if (isOpen && inputRef.current) {
+      inputRef.current.select();
+    }
+  }, [isOpen]);
 
   return (
     <div
@@ -93,6 +105,7 @@ function Popup() {
               <input
                 type="text"
                 value={propmtText}
+                ref={inputRef}
                 onChange={(e) => setPromptText(e.target.value)}
                 className="rounded-md bg-[#F4F4F7] p-[10px] mb-[10px]"
               />

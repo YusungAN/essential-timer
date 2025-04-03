@@ -1,4 +1,4 @@
-type UsedCustomEvents = "reset-display" | "open-popup";
+type UsedCustomEvents = "reset-display" | "open-popup" | "share-record";
 
 export function emitCustomEvent<T>(eventName: UsedCustomEvents, data?: T) {
   const event = new CustomEvent(eventName, { detail: data });

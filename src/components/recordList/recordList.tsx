@@ -147,6 +147,7 @@ function RecordList(props: RecordListProps) {
                 record={item}
                 isLast={idx === recordList.length - 1}
                 allAvg={idx === recordList.length - 1 ? calcAllRecordAvg() : 0}
+                allRecords={idx === recordList.length - 1 ? recordList : []}
                 lastRecords={recordList.slice(Math.max(0, idx - 11), idx + 1)}
                 onDelete={() => deleteRecord(item)}
                 changePenalty={(penalty: "" | "+2" | "DNF") =>

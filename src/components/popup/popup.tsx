@@ -52,6 +52,11 @@ function Popup() {
       inputRef.current.select();
       console.log('asdf');
     }
+    document.addEventListener("keydown", (e) => {
+      if (e.key === 'Enter') {
+        closePopupWithAction(onYesRef.current);
+      }
+    });
     window.addEventListener("open-popup", initDataForOpenPopUp);
     return () => window.removeEventListener("open-popup", initDataForOpenPopUp);
   }, []);

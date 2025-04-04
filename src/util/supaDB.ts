@@ -5,6 +5,7 @@ export const SupabaseAPI = {
   getSessionRecords: getSessionRecords,
   addRecord: addRecord,
   deleteRecord: deleteRecord,
+  deleteAllRecords: deleteAllRecords,
   changePenalty: changePenalty,
   getSessionIDList: getSessionIDList,
   addSession: addSession,
@@ -56,6 +57,24 @@ async function deleteRecord(sessionID: string, target: SolvedRecord) {
         .eq("userid", user.data.user.id)
         .eq("sessionid", sessionID)
         .eq("timestamp", target.timestamp);
+      if (status === 204) return;
+      throw Error();
+    }
+  } catch (e) {
+    console.log(e);
+    alert("기록을 삭제하는데 실패했습니다.");
+  }
+}
+
+async function deleteAllRecords(sessionID: string) {
+  try {
+    const user = await supabase.auth.getUser();
+    if (user.data.user) {
+      const { status } = await supabase
+        .from("record")
+        .delete()
+        .eq("userid", user.data.user.id)
+        .eq("sessionid", sessionID)
       if (status === 204) return;
       throw Error();
     }

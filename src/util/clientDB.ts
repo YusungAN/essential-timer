@@ -130,6 +130,32 @@ class IndexedDBClient {
     });
   }
 
+  public static async deleteAllRecords(sessionID: string) {
+    const idxDB = await IndexedDBClient.getInstance();
+
+    return new Promise<void>((resolve, reject) => {
+      const tx = idxDB.transaction("record-session", "readwrite");
+      const store = tx.objectStore("record-session");
+      const getReq = store.get(sessionID);
+
+      getReq.onsuccess = () => {
+        const data = getReq.result || { session_id: sessionID, records: [] };
+
+        // if (data.records.length > 0) {
+        // const deleteIdx: number = data.records.findIndex((item: SolvedRecord) => item.timestamp === target.timestamp);
+        // if (deleteIdx > -1) data.records.splice(deleteIdx, 1);
+        data.records = [];
+        store.put(data);
+        // }
+        resolve();
+      };
+
+      getReq.onerror = () => {
+        reject();
+      };
+    });
+  }
+
   public static async changePenalty(
     sessionID: string,
     target: SolvedRecord,
@@ -244,7 +270,7 @@ class IndexedDBClient {
 
       addSessionReq.onerror = () => {
         reject();
-      }
+      };
     });
   }
 
@@ -263,7 +289,7 @@ class IndexedDBClient {
 
       deleteReq.onerror = () => {
         reject();
-      }
+      };
     });
   }
 

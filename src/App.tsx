@@ -16,6 +16,7 @@ import { useLocalStorage } from "usehooks-ts";
 import { time2Str } from "./util/record.util";
 import "pretendard/dist/web/static/pretendard.css";
 import SharePopup from "./components/recordList/subs/sharePopup";
+import { useHotKey } from "./hooks/useHotKey";
 
 function App() {
   const { scramble, setNewScramble, nowCubeType, changeCubeType, cubeList } =
@@ -33,6 +34,7 @@ function App() {
     recordList,
     addRecord,
     deleteRecord,
+    deleteAllRecords,
     changePenalty,
     sessionID,
     sessionIDLIst,
@@ -40,6 +42,15 @@ function App() {
     addSession,
     deleteSession,
   } = useRecords();
+
+  // ¡™£¢∞§¶
+  useHotKey("Alt", "¡", () => changeCubeType("Square-1"));
+  useHotKey("Alt", "™", () => changeCubeType("2x2x2"));
+  useHotKey("Alt", "£", () => changeCubeType("3x3x3"));
+  useHotKey("Alt", "¢", () => changeCubeType("4x4x4"));
+  useHotKey("Alt", "∞", () => changeCubeType("5x5x5"));
+  useHotKey("Alt", "§", () => changeCubeType("6x6x6"));
+  useHotKey("Alt", "¶", () => changeCubeType("7x7x7"));
 
   const [isSpaceDowned, setIsSpaceDowned] = useState(false);
   const [isScrambleLoading, handleSetNewScr] = useLoading(setNewScramble);
@@ -58,6 +69,8 @@ function App() {
   }
 
   function handleStopTimer(e: KeyboardEvent) {
+    // console.log(e.ctrlKey, e.altKey);
+    // console.log(e.key);
     if (e.key === " " && !usePopupStore.getState().isOpen) {
       setIsSpaceDowned(true);
       stopTiemr();
@@ -130,6 +143,7 @@ function App() {
           onSessionChange={changeSession}
           addSession={addSession}
           deleteSession={deleteSession}
+          deleteAllRecords={deleteAllRecords}
         />
         <div>
           {/* timer section */}

@@ -91,6 +91,20 @@ export function useRecords() {
     }
   }
 
+  async function deleteAllRecords(targetSession: string) {
+    try {
+      if (isLogged) {
+        await SupabaseAPI.deleteAllRecords(targetSession);
+      } else {
+        await IndexedDBClient.deleteAllRecords(targetSession);
+      }
+      setRecordList([]);
+    } catch (e) {
+      console.log(e);
+      alert("기록을 삭제하는데 실패했습니다.");
+    }
+  }
+
   async function changePenalty(
     target: SolvedRecord,
     penalty: "" | "+2" | "DNF"
@@ -179,6 +193,7 @@ export function useRecords() {
     getSessionRecords,
     addRecord,
     deleteRecord,
+    deleteAllRecords,
     changePenalty,
     addSession,
     deleteSession,

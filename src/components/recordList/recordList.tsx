@@ -9,10 +9,14 @@ import { useLocalStorage } from "usehooks-ts";
 //   unsubscribeCustomEvent,
 // } from "../../util/customEvent";
 import SessionSelector from "../sessionSelector/sessionSelector";
+import Button from "../popup/subs/button";
+import { usePopupStore } from "../../store/usePopupStore";
+import { useHotKey } from "../../hooks/useHotKey";
 
 interface RecordListProps {
   recordList: SolvedRecord[];
   deleteRecord: (target: SolvedRecord) => void;
+  deleteAllRecords: (targetSession: string) => void;
   changePenalty: (target: SolvedRecord, penalty: "" | "+2" | "DNF") => void;
   nowSession: string;
   sessionIDList: string[];
@@ -25,6 +29,7 @@ function RecordList(props: RecordListProps) {
   const {
     recordList,
     deleteRecord,
+    deleteAllRecords,
     changePenalty,
     nowSession,
     sessionIDList,
@@ -40,6 +45,8 @@ function RecordList(props: RecordListProps) {
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
   const [hasScroll, setHasScroll] = useState(false);
+  const openPopUp = usePopupStore((state) => state.openPopUp);
+  useHotKey('Alt', '∂', openDeleteAllPopUp);
 
   // const {
   //   isCliking,
@@ -82,6 +89,16 @@ function RecordList(props: RecordListProps) {
     if (scrollRef.current) {
       setHasScroll(scrollRef.current.scrollTop !== 0);
     }
+  }
+
+  function openDeleteAllPopUp() {
+    openPopUp({
+      description: "정말 세션의 모든 기록을 삭제하시겠습니까?",
+      popupType: "confirm",
+      yesButtonText: "Yes",
+      noButtonText : "No",
+      actionOnYes: () => deleteAllRecords(nowSession),
+    });
   }
 
   // function showResizecursor(resizeType: ResizingPart) {
@@ -159,6 +176,7 @@ function RecordList(props: RecordListProps) {
         </div>
         <div className="flex w-full rounded-md p-[10px] mb-[5px] mt-[5px] justify-between items-center">
           <div></div>
+          <Button width="33%" height="30px" text="전체 삭제" fontSize="13px" onClick={openDeleteAllPopUp} />
           <div className="flex w-[70%] max-w-[200px] justify-between items-center text-base min-w-[100px] text-gray-500">
             <div className="w-[33%] text-center">ao5</div>
             <div className="w-[33%] text-center">ao12</div>

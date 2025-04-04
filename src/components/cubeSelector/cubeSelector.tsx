@@ -14,10 +14,7 @@ function CubeSelector(props: CubeSelectorProps) {
   const { nowCubeType, cubeList, onSelect } = props;
 
   const [isOpen, setIsOpen] = useState(false);
-  const listKeys = useMemo(
-    () => cubeList.map(() => nanoid()),
-    [cubeList]
-  );
+  const listKeys = useMemo(() => cubeList.map(() => nanoid()), [cubeList]);
 
   function handleChangeType(newCubeType: ScrambleType) {
     onSelect(newCubeType);
@@ -30,8 +27,8 @@ function CubeSelector(props: CubeSelectorProps) {
   }
 
   useEffect(() => {
-    document.addEventListener('click', () => {
-        setIsOpen(false);
+    document.addEventListener("click", () => {
+      setIsOpen(false);
     });
   }, []);
 

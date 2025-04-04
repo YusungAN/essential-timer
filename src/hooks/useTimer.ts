@@ -27,10 +27,10 @@ export function useTimer() {
 
   function updateInspection() {
     let inspectionTime = 0;
-    setTimeStr(inspectionTime.toString());
+    setTimeStr((15 - inspectionTime).toString());
     inspectionTimerRef.current = setInterval(() => {
       inspectionTime += 1;
-      setTimeStr(inspectionTime.toString());
+      setTimeStr((15 - inspectionTime).toString());
       if (inspectionTime >= 17) {
         setPenaltyWithInspection("DNF");
         setTimeStr("DNF");

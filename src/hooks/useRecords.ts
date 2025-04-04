@@ -93,7 +93,7 @@ export function useRecords() {
 
   async function deleteAllRecords(targetSession: string) {
     try {
-      if (isLogged) {
+      if (useLoginInfo.getState().isLogged) { // 여기만 작동이 잘 안됨?!?
         await SupabaseAPI.deleteAllRecords(targetSession);
       } else {
         await IndexedDBClient.deleteAllRecords(targetSession);

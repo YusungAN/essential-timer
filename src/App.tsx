@@ -43,14 +43,13 @@ function App() {
     deleteSession,
   } = useRecords();
 
-  // ¡™£¢∞§¶
-  useHotKey("Alt", "¡", () => changeCubeType("Square-1"));
-  useHotKey("Alt", "™", () => changeCubeType("2x2x2"));
-  useHotKey("Alt", "£", () => changeCubeType("3x3x3"));
-  useHotKey("Alt", "¢", () => changeCubeType("4x4x4"));
-  useHotKey("Alt", "∞", () => changeCubeType("5x5x5"));
-  useHotKey("Alt", "§", () => changeCubeType("6x6x6"));
-  useHotKey("Alt", "¶", () => changeCubeType("7x7x7"));
+  useHotKey("Alt", ["¡", "1"], () => changeCubeType("Square-1"));
+  useHotKey("Alt", ["™", "2"], () => changeCubeType("2x2x2"));
+  useHotKey("Alt", ["£", "3"], () => changeCubeType("3x3x3"));
+  useHotKey("Alt", ["¢", "4"], () => changeCubeType("4x4x4"));
+  useHotKey("Alt", ["∞", "5"], () => changeCubeType("5x5x5"));
+  useHotKey("Alt", ["§", "6"], () => changeCubeType("6x6x6"));
+  useHotKey("Alt", ["¶", "7"], () => changeCubeType("7x7x7"));
 
   const [isSpaceDowned, setIsSpaceDowned] = useState(false);
   const [isScrambleLoading, handleSetNewScr] = useLoading(setNewScramble);

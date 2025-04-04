@@ -38,15 +38,12 @@ function RecordList(props: RecordListProps) {
     deleteSession,
   } = props;
 
-  const [isRecordListOpen] = useLocalStorage(
-    "isRecordListOpen",
-    true
-  );
+  const [isRecordListOpen] = useLocalStorage("isRecordListOpen", true);
   const scrollRef = useRef<HTMLDivElement | null>(null);
 
   const [hasScroll, setHasScroll] = useState(false);
   const openPopUp = usePopupStore((state) => state.openPopUp);
-  useHotKey('Alt', '∂', openDeleteAllPopUp);
+  useHotKey("Alt", ["∂", "d"], openDeleteAllPopUp);
 
   // const {
   //   isCliking,
@@ -96,7 +93,7 @@ function RecordList(props: RecordListProps) {
       description: "정말 세션의 모든 기록을 삭제하시겠습니까?",
       popupType: "confirm",
       yesButtonText: "Yes",
-      noButtonText : "No",
+      noButtonText: "No",
       actionOnYes: () => deleteAllRecords(nowSession),
     });
   }
@@ -149,13 +146,19 @@ function RecordList(props: RecordListProps) {
           deleteSession={deleteSession}
         />
         <div
-          className={`absolute w-full h-[50px] ${hasScroll ? 'block' : 'hidden'} z-[1]`}
+          className={`absolute w-full h-[50px] ${
+            hasScroll ? "block" : "hidden"
+          } z-[1]`}
           style={{
             background:
               "linear-gradient(to bottom, rgba(244,244,247,1), rgba(244,244,247,0))",
           }}
         ></div>
-        <div ref={scrollRef} onScroll={checkHasScroll} className="overflow-auto h-[95%]">
+        <div
+          ref={scrollRef}
+          onScroll={checkHasScroll}
+          className="overflow-auto h-[95%]"
+        >
           {recordList.map((item, idx) => {
             return (
               <RecordItem
@@ -176,7 +179,13 @@ function RecordList(props: RecordListProps) {
         </div>
         <div className="flex w-full rounded-md p-[10px] mb-[5px] mt-[5px] justify-between items-center">
           <div></div>
-          <Button width="33%" height="30px" text="전체 삭제" fontSize="13px" onClick={openDeleteAllPopUp} />
+          <Button
+            width="33%"
+            height="30px"
+            text="전체 삭제"
+            fontSize="13px"
+            onClick={openDeleteAllPopUp}
+          />
           <div className="flex w-[70%] max-w-[200px] justify-between items-center text-base min-w-[100px] text-gray-500">
             <div className="w-[33%] text-center">ao5</div>
             <div className="w-[33%] text-center">ao12</div>

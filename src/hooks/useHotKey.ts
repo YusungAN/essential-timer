@@ -1,20 +1,24 @@
 import { useEffect } from "react";
 
 
-export function useHotKey(subKey: 'Ctrl' | 'Alt', mainKey: string, action: (...args: any[]) => any) {
+export function useHotKey(subKey: 'Ctrl' | 'Alt', mainKey: string[], action: (...args: any[]) => any) {
   // const {subKey, mainKey, action} = args;  
   function handleHotKey(e: KeyboardEvent) {
     // console.log('sadf');
     if (subKey === 'Ctrl' && e.ctrlKey) {
-      if (e.key === mainKey || kor2engMapForMac[e.key]) {
-        action();
-      }
+      mainKey.forEach((item) => {
+        if (e.key === item || kor2engMapForMac[e.key]) {
+          action();
+        }
+      });
     } else if (subKey === 'Alt' && e.altKey) {
-      console.log('sdf', e.key);
-      if (e.key === mainKey || kor2engMapForMac[e.key]) {
-        console.log('alt', mainKey);
-        action();
-      }
+      // console.log('sdf', e.key);
+      mainKey.forEach((item) => {
+        if (e.key === item || kor2engMapForMac[e.key]) {
+          // console.log('alt', mainKey);
+          action();
+        }
+      });
     }
   }
 

@@ -38,7 +38,7 @@ function SharePopup() {
     ];
     const recordTextList = recordList.map((item, idx) => {
       return `${idx + 1}. ${time2Str(item.record)}${
-        item.part_record === 0
+        item.part_record !== 0
           ? " (" +
             time2Str(item.part_record) +
             "+" +

@@ -37,8 +37,9 @@ function SharePopup() {
       `Average of ${recordList.length}: ${avg}\n`,
     ];
     const recordTextList = recordList.map((item, idx) => {
+      console.log(item.part_record);
       return `${idx + 1}. ${time2Str(item.record)}${
-        item.part_record !== 0
+        item.part_record !== undefined && item.part_record !== 0
           ? " (" +
             time2Str(item.part_record) +
             "+" +
@@ -74,6 +75,7 @@ function SharePopup() {
         >
           <textarea
             className="w-full h-[60vh] bg-gray-200 rounded-md p-[10px]"
+            readOnly
             value={recordsText}
             ref={textAreaRef}
           />

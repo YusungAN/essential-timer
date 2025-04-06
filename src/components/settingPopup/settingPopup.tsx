@@ -36,7 +36,7 @@ function SettingPopup() {
         onClick={() => setIsOpen(false)}
       >
         <div
-          className="w-[30vw] h-[80vh] rounded-md bg-white p-[15px] text-(--black)"
+          className="w-[80vw] md:w-[30vw] md:min-w-[400px] h-[80vh] rounded-md bg-white p-[15px] text-(--black)"
           onClick={(e: MouseEvent) => e.stopPropagation()}
         >
           <div className="text-xl font-bold mb-[20px]">도구 관리</div>

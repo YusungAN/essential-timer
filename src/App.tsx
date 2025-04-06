@@ -168,7 +168,7 @@ function App() {
     <>
       <LoginButton />
       <div
-        className="h-[80vh] flex flex-col w-full items-center font-[Pretendard]"
+        className={`h-[80vh] flex flex-col w-full items-center font-[Pretendard] ${isSpaceDowned ? 'select-none' : ''}`}
         onTouchStart={handleStopTimerTouch}
         onTouchEnd={handleStartTimerTouch}
       >

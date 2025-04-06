@@ -6,7 +6,7 @@ interface CubeItemProps {
 }
 
 function CubeItem(props: CubeItemProps) {
-    // console.log('rendered');
+  // console.log('rendered');
   const { cubeType, onCubeChange } = props;
 
   return (

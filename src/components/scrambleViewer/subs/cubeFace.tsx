@@ -14,7 +14,7 @@ function CubeFace(props: {
         gridTemplateRows: `repeat(${n}, minmax(0, 1fr))`,
         gap: `calc(var(--spacing) * ${n < 5 ? 1 : 0.5})`,
       }}
-      className={`w-full aspect-square grid xl:gap-1 lg:gap-1 md:gap-0.5`}
+      className={`w-full bg-[#F4F4F7] aspect-square grid xl:gap-1 lg:gap-1 md:gap-0.5`}
     >
       {flatFace.map((item, idx) => (
         <CubeSticker color={item} key={idx} />

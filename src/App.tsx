@@ -3,7 +3,6 @@ import { useScramble } from "./hooks/useScramble";
 import { useTimer } from "./hooks/useTimer";
 import { useRecords } from "./hooks/useRecords";
 import RecordList from "./components/recordList/recordList";
-import ScrambleViewer from "./components/scrambleViewer/scrambleViewer";
 import Popup from "./components/popup/popup";
 import supabase from "./supabase";
 import { useLoginInfo } from "./store/useLoginStore";
@@ -13,10 +12,11 @@ import { useLoading } from "./hooks/useLoading";
 import LoginButton from "./components/LoginButton/loginButton";
 import SettingPopup from "./components/settingPopup/settingPopup";
 import { useLocalStorage } from "usehooks-ts";
-import { time2Str } from "./util/record.util";
-import "pretendard/dist/web/static/pretendard.css";
 import SharePopup from "./components/recordList/subs/sharePopup";
 import { useHotKey } from "./hooks/useHotKey";
+import TimerSection from "./components/TimerSection/TimerSection";
+import ScrambleSection from "./components/ScrambleSection/ScrambleSection";
+import { CUBE_TYPE_HOTKEYS, CubeType } from "./constants/cubeTypes";
 
 function App() {
   const { scramble, setNewScramble, nowCubeType, changeCubeType, cubeList } =
@@ -43,13 +43,10 @@ function App() {
     deleteSession,
   } = useRecords();
 
-  useHotKey("Alt", ["¡", "1"], () => changeCubeType("Square-1"));
-  useHotKey("Alt", ["™", "2"], () => changeCubeType("2x2x2"));
-  useHotKey("Alt", ["£", "3"], () => changeCubeType("3x3x3"));
-  useHotKey("Alt", ["¢", "4"], () => changeCubeType("4x4x4"));
-  useHotKey("Alt", ["∞", "5"], () => changeCubeType("5x5x5"));
-  useHotKey("Alt", ["§", "6"], () => changeCubeType("6x6x6"));
-  useHotKey("Alt", ["¶", "7"], () => changeCubeType("7x7x7"));
+  // Register hotkeys for cube type changes
+  Object.entries(CUBE_TYPE_HOTKEYS).forEach(([cubeType, keys]) => {
+    useHotKey("Alt", keys, () => changeCubeType(cubeType as CubeType));
+  });
 
   const [isSpaceDowned, setIsSpaceDowned] = useState(false);
   const [isScrambleLoading, handleSetNewScr] = useLoading(setNewScramble);
@@ -60,6 +57,7 @@ function App() {
 
   const updateLoginInfo = useLoginInfo((state) => state.updateLoginInfo);
 
+  // Event handlers
   function handleStartTimer(e: KeyboardEvent) {
     if (e.key === " " && !usePopupStore.getState().isOpen) {
       setIsSpaceDowned(false);
@@ -68,11 +66,37 @@ function App() {
   }
 
   function handleStopTimer(e: KeyboardEvent) {
-    // console.log(e.ctrlKey, e.altKey);
-    // console.log(e.key);
     if (e.key === " " && !usePopupStore.getState().isOpen) {
       setIsSpaceDowned(true);
       stopTiemr();
+    }
+  }
+
+  function handleStartTimerTouch(e: React.TouchEvent) {
+    if (e.target === e.currentTarget && !usePopupStore.getState().isOpen) {
+      setIsSpaceDowned(false);
+      startTimer(isInspectionActiveRef.current, isBLDPartTimeActiveRef.current);
+    }
+  }
+
+  function handleStopTimerTouch(e: React.TouchEvent) {
+    if (e.target === e.currentTarget && !usePopupStore.getState().isOpen) {
+      setIsSpaceDowned(true);
+      stopTiemr();
+    }
+  }
+
+  // Record addition logic
+  function handleRecordAddition() {
+    if (!isRunning && record !== 0) {
+      addRecord(scramble, record, firstStopeedRecord, penaltyWithInspection);
+    }
+  }
+
+  // Scramble update logic
+  function handleScrambleUpdate() {
+    if (!isRunning) {
+      handleSetNewScr(nowCubeType);
     }
   }
 
@@ -91,7 +115,7 @@ function App() {
       document.removeEventListener("keyup", handleStartTimer, false);
       document.removeEventListener("keydown", handleStopTimer, false);
     };
-  }, []);
+  }, [updateLoginInfo]);
 
   useEffect(() => {
     isInspectionActiveRef.current = isInspectionActive;
@@ -102,67 +126,56 @@ function App() {
   }, [isBLDPartTimeActive]);
 
   useEffect(() => {
-    if (!isRunning) {
-      if (record !== 0)
-        addRecord(scramble, record, firstStopeedRecord, penaltyWithInspection);
-    }
-  }, [isRunning]);
+    handleRecordAddition();
+  }, [isRunning]); // 여기 dependency array는 lint의 말을 믿지 말기
 
   useEffect(() => {
-    if (!isRunning) {
-      handleSetNewScr(nowCubeType);
-    }
+    handleScrambleUpdate();
   }, [isRunning, nowCubeType]);
+
+  // Component props
+  const timerSectionProps = {
+    timeStr,
+    firstStopeedRecord,
+    isSpaceDowned,
+  };
+
+  const scrambleSectionProps = {
+    scramble,
+    nowCubeType,
+    isScrambleLoading,
+  };
+
+  const cubeSelectorProps = {
+    nowCubeType,
+    cubeList,
+    onSelect: changeCubeType,
+  };
+
+  const recordListProps = {
+    recordList,
+    deleteRecord,
+    changePenalty,
+    nowSession: sessionID,
+    sessionIDList: sessionIDLIst,
+    onSessionChange: changeSession,
+    addSession,
+    deleteSession,
+    deleteAllRecords,
+  };
 
   return (
     <>
       <LoginButton />
-      <div className="flex flex-col w-full items-center font-[Pretendard]">
-        <CubeSelector
-          nowCubeType={nowCubeType}
-          cubeList={cubeList}
-          onSelect={changeCubeType}
-        />
-        <div
-          className={`w-full text-center pl-[5vw] pr-[5vw] pt-[2vh] pb-[2vh] text-gray-500 ${
-            nowCubeType === "6x6x6" || nowCubeType === "7x7x7"
-              ? "lg:text-2xl md:text-xl sm:text-lg"
-              : "lg:text-4xl md:text-2xl sm:text-xl"
-          }`}
-        >
-          {isScrambleLoading ? "Loading..." : scramble}
-        </div>
-        {/* <div className="flex justify-between w-full"> */}
-        <RecordList // record list section
-          recordList={recordList}
-          deleteRecord={deleteRecord}
-          changePenalty={changePenalty}
-          nowSession={sessionID}
-          sessionIDList={sessionIDLIst}
-          onSessionChange={changeSession}
-          addSession={addSession}
-          deleteSession={deleteSession}
-          deleteAllRecords={deleteAllRecords}
-        />
-        <div>
-          {/* timer section */}
-          <div
-            className={`w-full text-center pt-[10vh] pb-[5vh] text-9xl tabular-nums ${
-              isSpaceDowned ? "text-[#F58432]" : "text-black"
-            }`}
-          >
-            {timeStr}
-          </div>
-          <div className="w-full text-center text-4xl">
-            {firstStopeedRecord !== 0 ? time2Str(firstStopeedRecord) : ""}
-          </div>
-          {/* <TempFunctions recordList={recordList} /> */}
-        </div>
-        <ScrambleViewer
-          scramble={scramble}
-          cubeType={nowCubeType}
-          isLoading={isScrambleLoading}
-        />
+      <div
+        className="h-[80vh] flex flex-col w-full items-center font-[Pretendard]"
+        onTouchStart={handleStopTimerTouch}
+        onTouchEnd={handleStartTimerTouch}
+      >
+        <CubeSelector {...cubeSelectorProps} />
+        <ScrambleSection {...scrambleSectionProps} />
+        <RecordList {...recordListProps} />
+        <TimerSection {...timerSectionProps} />
       </div>
       <Popup />
       <SettingPopup />

@@ -1,16 +1,34 @@
 import { useState } from "react";
-import { CubeState, genNxNxNScrambleState } from "../components/scrambleViewer/genNxNxNScrambleState";
+import {
+  CubeState,
+  genNxNxNScrambleState,
+} from "../components/scrambleViewer/genNxNxNScrambleState";
 import { randomScrambleForEvent } from "cubing/scramble";
 import { useLocalStorage } from "usehooks-ts";
 import { genSquare1ScrambleState } from "../components/scrambleViewer/genSquare1ScrambleState";
+import { CUBE_TYPES, CubeType } from "../constants/cubeTypes";
 
-export type ScrambleType = "2x2x2" | "3x3x3" | "4x4x4" | "5x5x5" | "6x6x6" | "7x7x7" | "Square-1" | "3x3x3BLD" | "4x4x4BLD" | "5x5x5BLD";
+export type ScrambleType = CubeType;
 
 export function useScramble() {
   const [scramble, setScramble] = useState<string>("");
-  const [nowCubeType, setNowCubeType] = useLocalStorage<ScrambleType>("cube-type", "3x3x3");
+  const [nowCubeType, setNowCubeType] = useLocalStorage<ScrambleType>(
+    "cube-type",
+    CUBE_TYPES.CUBE_3X3
+  );
 
-  const cubeList: ScrambleType[] = ["2x2x2", "3x3x3", "4x4x4", "5x5x5", "6x6x6", "7x7x7", "Square-1", "3x3x3BLD", "4x4x4BLD", "5x5x5BLD"];
+  const cubeList: ScrambleType[] = [
+    CUBE_TYPES.CUBE_2X2,
+    CUBE_TYPES.CUBE_3X3,
+    CUBE_TYPES.CUBE_4X4,
+    CUBE_TYPES.CUBE_5X5,
+    CUBE_TYPES.CUBE_6X6,
+    CUBE_TYPES.CUBE_7X7,
+    CUBE_TYPES.SQUARE_1,
+    CUBE_TYPES.CUBE_3BLD,
+    CUBE_TYPES.CUBE_4BLD,
+    CUBE_TYPES.CUBE_5BLD,
+  ];
 
   function changeCubeType(newCubeType: ScrambleType) {
     setNowCubeType(newCubeType);
@@ -22,34 +40,34 @@ export function useScramble() {
   }
 
   async function getScramble(scrambleType: ScrambleType): Promise<string> {
-    if (scrambleType === "3x3x3") {
+    if (scrambleType === CUBE_TYPES.CUBE_3X3) {
       const scrAlg = await randomScrambleForEvent("333");
       return scrAlg.toString();
-    } else if (scrambleType === "2x2x2") {
+    } else if (scrambleType === CUBE_TYPES.CUBE_2X2) {
       const scrAlg = await randomScrambleForEvent("222");
       return scrAlg.toString();
-    } else if (scrambleType === "4x4x4") {
+    } else if (scrambleType === CUBE_TYPES.CUBE_4X4) {
       const scrAlg = await randomScrambleForEvent("444");
       return scrAlg.toString();
-    } else if (scrambleType === "5x5x5") {
+    } else if (scrambleType === CUBE_TYPES.CUBE_5X5) {
       const scrAlg = await randomScrambleForEvent("555");
       return scrAlg.toString();
-    } else if (scrambleType === "6x6x6") {
+    } else if (scrambleType === CUBE_TYPES.CUBE_6X6) {
       const scrAlg = await randomScrambleForEvent("666");
       return scrAlg.toString();
-    } else if (scrambleType === "7x7x7") {
+    } else if (scrambleType === CUBE_TYPES.CUBE_7X7) {
       const scrAlg = await randomScrambleForEvent("777");
       return scrAlg.toString();
-    } else if (scrambleType === "Square-1") {
+    } else if (scrambleType === CUBE_TYPES.SQUARE_1) {
       const scrAlg = await randomScrambleForEvent("sq1");
       return scrAlg.toString();
-    } else if (scrambleType === "3x3x3BLD") {
+    } else if (scrambleType === CUBE_TYPES.CUBE_3BLD) {
       const scrAlg = await randomScrambleForEvent("333bf");
       return scrAlg.toString();
-    } else if (scrambleType === "4x4x4BLD") {
+    } else if (scrambleType === CUBE_TYPES.CUBE_4BLD) {
       const scrAlg = await randomScrambleForEvent("444bf");
       return scrAlg.toString();
-    } else if (scrambleType === "5x5x5BLD") {
+    } else if (scrambleType === CUBE_TYPES.CUBE_5BLD) {
       const scrAlg = await randomScrambleForEvent("555bf");
       return scrAlg.toString();
     }
@@ -58,13 +76,29 @@ export function useScramble() {
   }
 
   function getScrambleCubeState(scrambleType: ScrambleType, scramble: string) {
-    if (scrambleType === "3x3x3" || scrambleType === "3x3x3BLD") return genNxNxNScrambleState(scramble, 3);
-    else if (scrambleType === "2x2x2") return genNxNxNScrambleState(scramble, 2);
-    else if (scrambleType === "4x4x4" || scrambleType === "4x4x4BLD") return genNxNxNScrambleState(scramble, 4);
-    else if (scrambleType === "5x5x5" || scrambleType === "5x5x5BLD") return genNxNxNScrambleState(scramble, 5);
-    else if (scrambleType === "6x6x6") return genNxNxNScrambleState(scramble, 6);
-    else if (scrambleType === "7x7x7") return genNxNxNScrambleState(scramble, 7);
-    else if (scrambleType === "Square-1") return genSquare1ScrambleState(scramble);
+    if (
+      scrambleType === CUBE_TYPES.CUBE_3X3 ||
+      scrambleType === CUBE_TYPES.CUBE_3BLD
+    )
+      return genNxNxNScrambleState(scramble, 3);
+    else if (scrambleType === CUBE_TYPES.CUBE_2X2)
+      return genNxNxNScrambleState(scramble, 2);
+    else if (
+      scrambleType === CUBE_TYPES.CUBE_4X4 ||
+      scrambleType === CUBE_TYPES.CUBE_4BLD
+    )
+      return genNxNxNScrambleState(scramble, 4);
+    else if (
+      scrambleType === CUBE_TYPES.CUBE_5X5 ||
+      scrambleType === CUBE_TYPES.CUBE_5BLD
+    )
+      return genNxNxNScrambleState(scramble, 5);
+    else if (scrambleType === CUBE_TYPES.CUBE_6X6)
+      return genNxNxNScrambleState(scramble, 6);
+    else if (scrambleType === CUBE_TYPES.CUBE_7X7)
+      return genNxNxNScrambleState(scramble, 7);
+    else if (scrambleType === CUBE_TYPES.SQUARE_1)
+      return genSquare1ScrambleState(scramble);
     else
       return {
         U: Array(3).map(() => Array(3).fill("U")),
@@ -76,5 +110,12 @@ export function useScramble() {
       } as CubeState;
   }
 
-  return { scramble, setNewScramble, getScrambleCubeState, nowCubeType, changeCubeType, cubeList };
+  return {
+    scramble,
+    setNewScramble,
+    getScrambleCubeState,
+    nowCubeType,
+    changeCubeType,
+    cubeList,
+  };
 }

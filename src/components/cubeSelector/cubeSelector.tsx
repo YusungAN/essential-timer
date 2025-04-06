@@ -44,7 +44,7 @@ function CubeSelector(props: CubeSelectorProps) {
       </div>
       {isOpen ? (
         <>
-          <div className="absolute top-[10vh] bg-[#E5E5EB] shadow-sm rounded-md w-[120px] cursor-pointer">
+          <div className="absolute z-20 top-[10vh] bg-[#E5E5EB] shadow-sm rounded-md w-[120px] cursor-pointer">
             {cubeList.map((item, idx) => {
               return (
                 <CubeItem

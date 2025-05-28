@@ -30,10 +30,10 @@ function RecordItem(props: RecordItemProps) {
 
   const ao5 = useMemo(() => {
     return calculateAvg5(lastRecords.slice(-5));
-  }, [index, lastRecords, record.penalty]);
+  }, [index, ...lastRecords, record.penalty]); // 여기 잘 적지, 성능 최적화+ react devtools profiler
   const ao12 = useMemo(() => {
     return calculateAvg12(lastRecords);
-  }, [index, lastRecords, record.penalty]);
+  }, [index, ...lastRecords, record.penalty]);
 
   const openPopUp = usePopupStore((state) => state.openPopUp);
   const openRecordShareTap = usePopupStore(
@@ -53,7 +53,6 @@ function RecordItem(props: RecordItemProps) {
   }
 
   function calculateAvg5(recordList: SolvedRecord[]) {
-    // 이 함수를 상위 컴포넌트로 옮길까
     if (recordList.length !== 5) return 0;
     const tempArr = recordList
       .slice()
@@ -66,7 +65,6 @@ function RecordItem(props: RecordItemProps) {
       );
 
     tempArr.sort((a, b) => a - b);
-    // console.log(index, recordList, tempArr);
 
     const result = (tempArr[1] + tempArr[2] + tempArr[3]) / 3;
 
@@ -74,7 +72,6 @@ function RecordItem(props: RecordItemProps) {
   }
 
   function calculateAvg12(recordList: SolvedRecord[]) {
-    // statViewer에 있는게 틀림. 여기가 맞음
     if (recordList.length !== 12) return 0;
     const tempArr = recordList
       .slice()

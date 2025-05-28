@@ -43,7 +43,6 @@ function App() {
     deleteSession,
   } = useRecords();
 
-  // Register hotkeys for cube type changes
   Object.entries(CUBE_TYPE_HOTKEYS).forEach(([cubeType, keys]) => {
     useHotKey("Alt", keys, () => changeCubeType(cubeType as CubeType));
   });
@@ -57,7 +56,6 @@ function App() {
 
   const updateLoginInfo = useLoginInfo((state) => state.updateLoginInfo);
 
-  // Event handlers
   function handleStartTimer(e: KeyboardEvent) {
     if (e.key === " " && !usePopupStore.getState().isOpen) {
       setIsSpaceDowned(false);
@@ -168,7 +166,9 @@ function App() {
     <>
       <LoginButton />
       <div
-        className={`h-[80vh] flex flex-col w-full items-center font-[Pretendard] ${isSpaceDowned ? 'select-none' : ''}`}
+        className={`h-[80vh] flex flex-col w-full items-center font-[Pretendard] ${
+          isSpaceDowned ? "select-none" : ""
+        }`}
         onTouchStart={handleStopTimerTouch}
         onTouchEnd={handleStartTimerTouch}
       >

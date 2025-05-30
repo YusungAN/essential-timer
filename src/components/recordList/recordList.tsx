@@ -141,17 +141,6 @@ function RecordList(props: RecordListProps) {
 
   return (
     <>
-      {/* Mobile Toggle Button */}
-      {/* <div
-        className="md:hidden fixed bottom-0 left-0 right-0 bg-[#F4F4F7] p-3 flex justify-center items-center z-10 border-t border-gray-300"
-        onClick={toggleRecordList}
-      >
-        <div className="flex items-center">
-          <span className="mr-2 text-sm font-medium">기록 리스트</span>
-          {isRecordListOpen ? <FaChevronDown /> : <FaChevronUp />}
-        </div>
-      </div> */}
-
       <div
         // style={{
         //   top: `${elementPos.y}px`,

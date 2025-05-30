@@ -3,6 +3,7 @@ import { useEffect, useState, MouseEvent, useRef } from "react";
 import { time2Str } from "../../../util/record.util";
 import { usePopupStore } from "../../../store/usePopupStore";
 import Button from "../../popup/subs/button";
+import { encodeCubeSequence } from "../../../util/encodeScramble";
 
 function SharePopup() {
   // const { avg, recordList } = props;
@@ -34,10 +35,12 @@ function SharePopup() {
       `Generated on ${now.getFullYear()}. ${
         now.getMonth() + 1
       }. ${now.getDate()}.`,
-      `Average of ${recordList.length}: ${avg}\n`,
+      avg !== "0"
+        ? `Average of ${recordList.length}: ${avg}\n`
+        : `Single: ${time2Str(recordList[0].record)}\n`,
     ];
     const recordTextList = recordList.map((item, idx) => {
-      console.log(item.part_record);
+      // console.log(item.part_record);
       return `${idx + 1}. ${time2Str(item.record)}${
         item.part_record !== undefined && item.part_record !== 0
           ? " (" +
@@ -57,7 +60,6 @@ function SharePopup() {
   useEffect(() => {
     if (textAreaRef.current) {
       textAreaRef.current.select();
-      console.log("fuck");
     }
   }, [recordsText]);
 
@@ -80,13 +82,30 @@ function SharePopup() {
             ref={textAreaRef}
           />
           <div className="h-[15px]"></div>
-          <Button
-            width={"20%"}
-            height={"40px"}
-            text={"클립보드에 복사"}
-            color={"#64646F"}
-            onClick={() => navigator.clipboard.writeText(recordsText)}
-          />
+          <div className="flex justify-end w-full">
+            <Button
+              width={"27%"}
+              height={"40px"}
+              text={"솔루션 공유하기(3x3x3 only)"}
+              color={"#64646F"}
+              onClick={() =>
+                window.open(
+                  `https://3d-cube-simulator.vercel.app/?setup=${encodeCubeSequence(
+                    recordList[0].scramble
+                  )}`,
+                  "_blank"
+                )
+              }
+            />
+            <div className="w-[10px]"></div>
+            <Button
+              width={"20%"}
+              height={"40px"}
+              text={"클립보드에 복사"}
+              color={"#64646F"}
+              onClick={() => navigator.clipboard.writeText(recordsText)}
+            />
+          </div>
         </div>
       </div>
     </>

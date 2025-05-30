@@ -1,4 +1,5 @@
 import { FaDeleteLeft } from "react-icons/fa6";
+import { FaShareAlt } from "react-icons/fa";
 import { SolvedRecord } from "../../../util/record.util";
 import { MouseEvent, useMemo, useState } from "react";
 import { usePopupStore } from "../../../store/usePopupStore";
@@ -30,7 +31,7 @@ function RecordItem(props: RecordItemProps) {
 
   const ao5 = useMemo(() => {
     return calculateAvg5(lastRecords.slice(-5));
-  }, [index, ...lastRecords, record.penalty]); // 여기 잘 적지, 성능 최적화+ react devtools profiler
+  }, [index, ...lastRecords, record.penalty]); // !!!
   const ao12 = useMemo(() => {
     return calculateAvg12(lastRecords);
   }, [index, ...lastRecords, record.penalty]);
@@ -65,9 +66,7 @@ function RecordItem(props: RecordItemProps) {
       );
 
     tempArr.sort((a, b) => a - b);
-
     const result = (tempArr[1] + tempArr[2] + tempArr[3]) / 3;
-
     return result === Infinity ? "DNF" : result;
   }
 
@@ -111,8 +110,10 @@ function RecordItem(props: RecordItemProps) {
     avg: number | "DNF",
     recordList: SolvedRecord[]
   ) {
-    if (avg === 0) return;
-    openRecordShareTap(avg === "DNF" ? "DNF" : time2Str(avg, true), recordList);
+    openRecordShareTap(
+      avg === "DNF" ? "DNF" : avg === 0 ? "0" : time2Str(avg, true),
+      recordList
+    );
   }
 
   return (
@@ -168,6 +169,12 @@ function RecordItem(props: RecordItemProps) {
         </div>
       ) : (
         <div className="flex w-[30%] max-w-[100px] justify-between items-center text-sm min-w-[100px] cursor-pointer">
+          <FaShareAlt
+            className="w-4 h-4"
+            onClick={() => handleOpenRecordShareTap(0, [record])}
+            onMouseDown={(e) => e.stopPropagation()}
+          />
+
           <div
             onClick={(e) => handleChangePenalty(e, "+2")}
             onMouseDown={(e) => e.stopPropagation()}

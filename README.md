@@ -1,54 +1,20 @@
-# React + TypeScript + Vite
+# Essential Timer
+---
+다른 큐브 타이머들의 좋은 UI와 UX만 모아서 만들어본 큐브 타이머입니다.
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+### 주요 기능
+---
+* 솔빙 시간 측정
+* 스크램블 생성 및 뷰어 제공
+    * 222-777, 333/444/555BLD, Square-1을 현재 지원합니다.
+* 기록 저장
+  * 로그인 시 기기 상관없이 동일한 기록/세션 정보를 유지할 수 있습니다.
+* 단축키
+  * [Alt/Option] + [1/2/3/4/5/6/7] => Square-1, 222, 333, 444, 555, 666, 777로 스크램블을 바꿀 수 있습니다.
+  * [Alt/Option] + D => 모든 기록을 삭제할 수 있습니다.
+* 기록 공유
+  * 평균/싱글 기록을 클릭하면, 기록과 그 스크램블을 공유할 수 있습니다.
 
-Currently, two official plugins are available:
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
-
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
-
-```js
-export default tseslint.config({
-  extends: [
-    // Remove ...tseslint.configs.recommended and replace with this
-    ...tseslint.configs.recommendedTypeChecked,
-    // Alternatively, use this for stricter rules
-    ...tseslint.configs.strictTypeChecked,
-    // Optionally, add this for stylistic rules
-    ...tseslint.configs.stylisticTypeChecked,
-  ],
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
-```
-
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
-
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
-
-export default tseslint.config({
-  plugins: {
-    // Add the react-x and react-dom plugins
-    'react-x': reactX,
-    'react-dom': reactDom,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended typescript rules
-    ...reactX.configs['recommended-typescript'].rules,
-    ...reactDom.configs.recommended.rules,
-  },
-})
-```
+* 참고: https://deepwiki.com/YusungAN/essential-timer
+코드 구조나 구현 등에 대한 자세한 내용이 정리되어 있습니다.
